@@ -1,1 +1,1 @@
-# Vagrant & Puppet
+# Vagrant
