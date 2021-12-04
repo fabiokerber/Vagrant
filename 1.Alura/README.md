@@ -29,12 +29,13 @@ PowerShell
     $ exit
 > vagrant halt
 
-### !!!! edit Vagranfile !!!!
+!!!! edit Vagranfile !!!!
     config.vm.network "forwarded_port", guest: 80, host:8089
 
+> vagrant up
 
+!!!! navegador http://localhost:8089 !!!!
 ```
-
 
 |Requisitos      |Links|
 |-------------|-----------|
