@@ -23,6 +23,7 @@ vagrant halt
 vagrant suspend
 ```
 
+
 |Requisitos      |Links|
 |-------------|-----------|
 |`Vagrant`| https://www.vagrantup.com/downloads
