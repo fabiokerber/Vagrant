@@ -8,10 +8,13 @@ PowerShell
 > vagrant version
 > vagrant init hashicorp/precise64
 > vagrant up
-> vagrant status 
+> vagrant status
+> vagrant halt
+> vagrant suspend
 
 ```
 
-|Ansible      |Descrição|
+|Requisitos      |Descrição|
 |-------------|-----------|
-|`text`| text
+|`Vagrant`| https://www.vagrantup.com/downloads
+|`Virtualbox`| https://www.virtualbox.org/wiki/Downloads
