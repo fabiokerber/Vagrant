@@ -1,10 +1,11 @@
 # Vagrant & Puppet
 
+## 01.Alura
 ### Preparação
 
 PowerShell
 ```
-vagrant version
+> vagrant version
 
 ```
 
