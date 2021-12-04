@@ -1,26 +1,17 @@
 # Vagrant & Puppet
 
 ## 01.Alura
-### Preparação
+### Início
 
 PowerShell
 ```
-vagrant version
-```
-```
-vagrant init hashicorp/precise64
-```
-```
-vagrant up
-```
-```
-vagrant status
-```
-```
-vagrant halt
-```
-```
-vagrant suspend
+>vagrant version
+> vagrant init hashicorp/precise64
+> vagrant up
+> vagrant status
+> vagrant halt
+> vagrant suspend
+> vagrant ssh
 ```
 
 
