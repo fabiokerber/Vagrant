@@ -5,16 +5,20 @@
 
 PowerShell
 ```
-> vagrant version
-> vagrant init hashicorp/precise64
-> vagrant up
-> vagrant status
-> vagrant halt
-> vagrant suspend
-
+vagrant version
+```
+vagrant init hashicorp/precise64
+```
+vagrant up
+```
+vagrant status
+```
+vagrant halt
+```
+vagrant suspend
 ```
 
-|Requisitos      |Descrição|
+|Requisitos      |Links|
 |-------------|-----------|
 |`Vagrant`| https://www.vagrantup.com/downloads
 |`Virtualbox`| https://www.virtualbox.org/wiki/Downloads
