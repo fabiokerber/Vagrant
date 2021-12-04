@@ -11,6 +11,7 @@ PowerShell
 > vagrant status
 > vagrant halt
 > vagrant suspend
+> vagrant reload
 > vagrant ssh (u vagrant / s vagrant - default)
 > vagrant ssh-config
 ```
@@ -35,6 +36,18 @@ PowerShell
 > vagrant up
 
 !!!! navegador http://localhost:8089 !!!!
+```
+
+### Private Network
+
+PowerShell
+```
+> cd bionic
+
+!!!! edit Vagranfile !!!!
+    config.vm.network "private_network", ip: "192.168.50.4"
+
+> vagrant up / vagrant reload (Ubuntu 18.04.2)
 ```
 
 |Requisitos      |Links|
