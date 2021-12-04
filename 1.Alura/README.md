@@ -7,13 +7,18 @@ PowerShell
 ```
 vagrant version
 ```
+```
 vagrant init hashicorp/precise64
+```
 ```
 vagrant up
 ```
+```
 vagrant status
 ```
+```
 vagrant halt
+```
 ```
 vagrant suspend
 ```
