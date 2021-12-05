@@ -1,7 +1,7 @@
 # 01.Alura
 
 ### Vagrant & Puppet & Ansible
--**Início**
+- **Início**
 
 *PowerShell - precise (Ubuntu 12.04)*
 ```
