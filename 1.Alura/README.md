@@ -3,7 +3,7 @@
 ### Vagrant & Puppet & Ansible
 <br />
 
-**Início**
+**Start**
 
 *PowerShell - precise (Ubuntu 12.04)*
 ```
@@ -76,7 +76,34 @@
 ```
 <br />
 
-|Tools      |Links|
+**Connecting by SSH (Private Key)**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+> vagrant ssh-config
+    IdentityFile ...
+
+>  ssh -i D:/git_projects/Vagrant/1.Alura/bionic/.vagrant/machines/default/virtualbox/private_key vagrant@192.168.0.50
+```
+<br />
+
+**Add SSH Key to VM(Private Key)**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+> ssh-keygen -t rsa
+    D:/git_projects/Vagrant/1.Alura/bionic/id_bionic
+
+> vagrant ssh
+    $ ls /vagrant
+    $ cp /vagrant/id_bionic.pub ~
+    $ cat /vagrant/id_bionic.pub >> .ssh/authorized_keys
+```
+<br />
+
+|Tools      |Links/Tips|
 |-------------|-----------|
 |`Vagrant`| https://www.vagrantup.com/downloads
 |`Virtualbox`| https://www.virtualbox.org/wiki/Downloads
+|`PowerShell`| Set-PSReadlineOption -BellStyle None
+
