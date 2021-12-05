@@ -18,6 +18,11 @@
 > vagrant ssh-config
 > vagrant destroy
 > vagrant validate
+> vagrant global-status (exibe todos os ambientes virtualizados)
+> vagrant global-status --prune (remove entradas antigas)
+> vagrant destroy <id> (conforme comando acima - funciona de qualquer pasta)
+> vagrant <comando> <id> (conforme exemplos acima)
+> vagrant box list
 ```
 <br />
 
@@ -59,6 +64,19 @@
 > vagrant ssh
 ```
 <br />
+
+**DHCP**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! edit Vagranfile !!!
+    config.vm.network "private_network", type: "dhcp"
+
+> vagrant up / vagrant reload
+> vagrant ssh
+```
+<br />
+
 
 **Public Network (Bridge)**
 
@@ -202,7 +220,7 @@
             phpweb.vm.network "forwarded_port", guest:80, host:8089
             phpweb.vm.network "public_network", ip: "192.168.0.100"
 
-            phpweb.vm.provision "shell", inline: "apt update && apt install -y puppet"
+            phpweb.vm.provision "shell", inline: "apt-get update && apt-get install -y puppet"
 
         end
 
@@ -347,7 +365,8 @@
 > vagrant ssh ansible
     $ ansible-playbook -i /vagrant/configs/ansible/hosts /vagrant/configs/ansible/playbook.yml
 
-> (vagrant up mysqlserver) -and (vagrant up ansible)
+> vagrant up mysqlserver
+> vagrant up ansible
 ```
 <br />
 
@@ -359,7 +378,37 @@
     ansible.vm.provision "shell", inline: "ansible-playbook -i /vagrant/configs/ansible/hosts /vagrant/configs/ansible/playbook.yml"
 
 > vagrant destroy -f
-> (vagrant up mysqlserver) -and (vagrant up ansible) -and (vagrant up phpweb)
+> vagrant up mysqlserver
+> vagrant up ansible
+> vagrant up phpweb
+```
+<br />
+
+**Configuração de Hardware**
+
+*Anotação*
+```
+(Geral)
+Vagrant.configure ("2") do |config|
+config.vm.box = "ubuntu/bionic64"
+
+config.vm.provider "virtualbox" do |vb|
+vb.memory = 512
+vb.cpus = 1
+end
+
+------------------------------------------------
+(Apenas PHPWEB)
+config.vm.define "phpweb" do |phpweb|
+    phpweb.vm.network "forwarded_port", guest: 8888, host: 8888
+    phpweb.vm.network "public_network", ip: "192.168.1.25"
+
+    phpweb.vm.provider "virtualbox" do |vb|
+        vb.memory = 1024
+        vb.cpus = 2
+        vb.name = "ubuntu_bionic_php7"
+end
+
 ```
 <br />
 
