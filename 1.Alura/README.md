@@ -1,4 +1,4 @@
-# 01.Alura
+# 1.Alura
 
 ### Vagrant & Puppet & Ansible
 <br />
