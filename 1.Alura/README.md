@@ -17,6 +17,7 @@
 > vagrant ssh (u vagrant / s vagrant - default)
 > vagrant ssh-config
 ```
+<br />
 
 **Port Forwarding**
 
@@ -43,6 +44,7 @@
 
 !!!! navegador http://localhost:8089 !!!!
 ```
+<br />
 
 **Private Network**
 
@@ -54,6 +56,7 @@
 > vagrant up / vagrant reload
 > vagrant ssh
 ```
+<br />
 
 **Public Network (Bridge)**
 
@@ -71,6 +74,7 @@
 > vagrant up / vagrant reload
 > vagrant ssh
 ```
+<br />
 
 |Tools      |Links|
 |-------------|-----------|
