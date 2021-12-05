@@ -2,10 +2,9 @@
 ## Vagrant & Puppet & Ansible
 ### Início
 
-PowerShell
+PowerShell - precise (Ubuntu 12.04)
 ```
 > vagrant version
-> cd precise (Ubuntu 12.04)
 > vagrant init hashicorp/precise64 
 > vagrant up 
 > vagrant status
@@ -18,14 +17,12 @@ PowerShell
 
 ### Port Forwarding
 
-PowerShell
+PowerShell - bionic (Ubuntu 18.04.6)
 ```
-> cd bionic (Ubuntu 18.04.2)
-
-###!!!! edit Vagranfile !!!!
-###    Vagrant.configure("2") do |config|
-###        config.vm.box = "ubuntu/bionic64"
-###    end
+!!!! edit Vagranfile !!!!
+    Vagrant.configure("2") do |config|
+        config.vm.box = "ubuntu/bionic64"
+    end
 
 > vagrant up
 > vagrant ssh
@@ -46,12 +43,21 @@ PowerShell
 
 ### Private Network
 
-PowerShell
+PowerShell - bionic (Ubuntu 18.04.6)
 ```
-> cd bionic (Ubuntu 18.04.2)
-
 !!!! edit Vagranfile !!!!
     config.vm.network "private_network", ip: "192.168.50.4"
+
+> vagrant up / vagrant reload
+> vagrant ssh
+```
+
+### Public Network (Bridge)
+
+PowerShell - bionic (Ubuntu 18.04.6)
+```
+!!!! edit Vagranfile !!!!
+    config.vm.network "public_network"
 
 > vagrant up / vagrant reload
 > vagrant ssh
