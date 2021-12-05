@@ -50,7 +50,7 @@ PowerShell
 > vagrant up / vagrant reload (Ubuntu 18.04.2)
 ```
 
-|Requisitos      |Links|
+|Tools      |Links|
 |-------------|-----------|
 |`Vagrant`| https://www.vagrantup.com/downloads
 |`Virtualbox`| https://www.virtualbox.org/wiki/Downloads
