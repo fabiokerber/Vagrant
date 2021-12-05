@@ -129,14 +129,48 @@
     config.vm.synced_folder "./configs", "/configs" (Mapeia pasta configs dentro de bionic em /configs)
     config.vm.synced_folder ".", "/vagrant", disabled: true (Desabilita o mapeamento do conteúdo da pasta padrão "bionic")
 
-> vagrant destroy
+> vagrant destroy -f
 > vagrant up
 
 ```
 <br />
 
+**MySQL Provisioning**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!!! edit Vagranfile !!!!
+    $script_mysql = <<-SCRIPT
+        apt-get update && \
+        apt-get install -y mysql-server-5.7 && \
+        mysql -e "create user 'phpuser'@'%' identified by 'pass';"
+    SCRIPT
+
+    config.vm.provision "shell", inline: $script_mysql
+
+> vagrant destroy -f
+> vagrant up
+> vagrant ssh
+    $ sudo mysql
+    mysql> select user from mysql.user
+    mysql> ;
+    $ cat /etc/mysql/mysql.conf.d/mysqld.cnf >> /configs/mysqld.cnf
+
+!!!! /configs/mysqld.cnf !!!!
+    bind-address		= 0.0.0.0 (Permitir conexão externa a partir de qualquer host)
+
+!!!! edit Vagranfile !!!!
+    config.vm.provision "shell", inline: "cat /configs/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
+    config.vm.provision "shell", inline: "service mysql restart"
+
+> vagrant destroy -f
+> vagrant up
+```
+<br />
+
 |Tools      |Links/Tips|
 |-------------|-----------|
-|`Vagrant`| https://www.vagrantup.com/downloads
-|`Virtualbox`| https://www.virtualbox.org/wiki/Downloads
+|`Vagrant Downloads`| https://www.vagrantup.com/downloads
+|`Vagrant Docs`| https://www.vagrantup.com/docs
+|`Virtualbox Downloads`| https://www.virtualbox.org/wiki/Downloads
 |`PowerShell`| Set-PSReadlineOption -BellStyle None
