@@ -16,6 +16,7 @@
 > vagrant reload
 > vagrant ssh (u vagrant / s vagrant - default)
 > vagrant ssh-config
+> vagrant destroy
 ```
 <br />
 
@@ -101,9 +102,41 @@
 ```
 <br />
 
+**Shell Provisioner**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!!! edit Vagranfile !!!!
+    config.vm.provision "shell", inline: "echo Hello, World >> hello.txt"
+
+> vagrant up / vagrant reload (Necessário forçar com o comando abaixo, pois o provision é somente no ato da criação)
+> vagrant provision
+
+> vagrant ssh
+    $ cat hello.txt
+
+```
+<br />
+
+**Synced Folder & +Shell**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! create folder configs !!!
+!!! copy id_bionic.pub to configs !!!
+
+!!!! edit Vagranfile !!!!
+    config.vm.synced_folder "./configs", "/configs" (Mapeia pasta configs dentro de bionic em /configs)
+    config.vm.synced_folder ".", "/vagrant", disabled: true (Desabilita o mapeamento do conteúdo da pasta padrão "bionic")
+
+> vagrant destroy
+> vagrant up
+
+```
+<br />
+
 |Tools      |Links/Tips|
 |-------------|-----------|
 |`Vagrant`| https://www.vagrantup.com/downloads
 |`Virtualbox`| https://www.virtualbox.org/wiki/Downloads
 |`PowerShell`| Set-PSReadlineOption -BellStyle None
-

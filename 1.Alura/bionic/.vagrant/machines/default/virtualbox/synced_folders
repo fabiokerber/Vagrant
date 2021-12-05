@@ -1,1 +1,1 @@
-{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"D:/git_projects/Vagrant/1.Alura/bionic","disabled":false,"__vagrantfile":true}}}
+{"virtualbox":{"/configs":{"guestpath":"/configs","hostpath":"D:/git_projects/Vagrant/1.Alura/bionic/configs","disabled":false,"__vagrantfile":true}}}
