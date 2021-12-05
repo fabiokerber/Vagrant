@@ -3,7 +3,7 @@
 ### Vagrant & Puppet & Ansible
 <br />
 
-**Start**
+**Início**
 
 *PowerShell - precise (Ubuntu 12.04)*
 ```
@@ -17,6 +17,7 @@
 > vagrant ssh (u vagrant / s vagrant - default)
 > vagrant ssh-config
 > vagrant destroy
+> vagrant validate
 ```
 <br />
 
@@ -77,7 +78,7 @@
 ```
 <br />
 
-**Connecting by SSH (Private Key)**
+**Conexão via SSH (Private Key)**
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
@@ -88,7 +89,7 @@
 ```
 <br />
 
-**Add SSH Key to VM(Private Key)**
+**Adicionando SSH Key à VM(Private Key)**
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
@@ -135,7 +136,7 @@
 ```
 <br />
 
-**MySQL Provisioning**
+**Provisionando MySQL**
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
@@ -252,10 +253,121 @@
 ```
 <br />
 
+**Instalação Ansible**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! edit Vagranfile !!!
+    config.vm.define "mysqlserver" do |mysqlserver|
+        mysqlserver.vm.network "public_network", ip: "192.168.0.150"
+    end
+
+    config.vm.define "ansible" do |ansible|
+        ansible.vm.network "public_network", ip: "192.168.0.200"
+        ansible.vm.provision "shell",
+            inline: "apt-get update && \
+                     apt-get install -y software-properties-common && \
+                     apt-add-repository --yes --update ppa:ansible/ansible && \
+                     apt-get install -y ansible"
+    end
+
+> vagrant destroy -f
+> vagrant up
+> vagrant ssh ansible
+    $ ansible-playbook --version
+
+!!! edit Vagranfile !!!
+    mysqlserver.vm.provision "shell", inline: "cat /vagrant/configs/id_bionic.pub >> .ssh/authorized_keys"
+
+> vagrant up mysqlserver
+> vagrant ssh mysqlserver
+    $ cat .ssh/authorized_keys
+
+!!! edit Vagranfile !!!
+    ansible.vm.provision "shell", inline: "cp /vagrant/id_bionic /home/vagrant && chmod 600 /home/vagrant/id_bionic && chown vagrant:vagrant /home/vagrant/id_bionic"
+> vagrant provision ansible
+```
+<br />
+
+**Testando Playbook**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! create folder configs/ansible !!!
+!!! edit configs/ansible/hosts !!!
+    [mysqlserver]
+    192.168.1.22
+
+    [mysqlserver:vars]
+    ansible_user=vagrant
+    ansible_ssh_private_key_file=/home/vagrant/id_bionic
+    ansible_python_interpreter=/usr/bin/python3
+    ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+!!! edit configs/ansible/playbook.yml !!!
+  - hosts: all
+    handlers:
+      - name: restart mysql
+        service:
+          name: mysql
+          state: restarted
+        become: yes
+
+    tasks:
+      - name: 'Instalar MySQL Server'
+        apt:
+          update_cache: yes
+          cache_valid_time: 3600 #1 hora
+          name: ["mysql-server-5.7", "python3-mysqldb"]
+          state: latest
+        become: yes
+
+      - name: 'Criar usuario no MySQL'
+        mysql_user:
+          login_user: root
+          name: phpuser
+          password: pass
+          priv: '*.*:ALL'
+          host: '%'
+          state: present
+        become: yes
+
+      - name: 'Copiar arquivo mysqld.cnf'
+        copy:
+          src: /vagrant/configs/mysqld.cnf
+          dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+          owner: root
+          group: root
+          mode: 0644
+        become: yes
+        notify:
+          - restart mysql
+
+> vagrant destroy -f
+> vagrant ssh ansible
+    $ ansible-playbook -i /vagrant/configs/ansible/hosts /vagrant/configs/ansible/playbook.yml
+
+> (vagrant up mysqlserver) -and (vagrant up ansible)
+```
+<br />
+
+**Integrando com o Vagrant**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! edit Vagranfile !!!
+    ansible.vm.provision "shell", inline: "ansible-playbook -i /vagrant/configs/ansible/hosts /vagrant/configs/ansible/playbook.yml"
+
+> vagrant destroy -f
+> (vagrant up mysqlserver) -and (vagrant up ansible) -and (vagrant up phpweb)
+```
+<br />
+
 |Tools      |Links/Tips|
 |-------------|-----------|
 |`Vagrant Downloads`| https://www.vagrantup.com/downloads
 |`Vagrant Docs`| https://www.vagrantup.com/docs
 |`Virtualbox Downloads`| https://www.virtualbox.org/wiki/Downloads
+|`Ansible Install`| http://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 |`Puppet Lamp`| https://www.digitalocean.com/community/tutorials/getting-started-with-puppet-code-manifests-and-modules
 |`PowerShell`| Set-PSReadlineOption -BellStyle None
