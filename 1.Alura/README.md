@@ -1,8 +1,9 @@
 # 01.Alura
-## Vagrant & Puppet & Ansible
+
+**Vagrant & Puppet & Ansible**
 ### Início 
 
-* * PowerShell - precise (Ubuntu 12.04)
+**PowerShell - precise (Ubuntu 12.04)**
 ```
 > vagrant version
 > vagrant init hashicorp/precise64 
