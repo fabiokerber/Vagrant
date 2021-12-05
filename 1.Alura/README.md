@@ -5,9 +5,9 @@
 PowerShell
 ```
 > vagrant version
-> cd precise
+> cd precise (Ubuntu 12.04)
 > vagrant init hashicorp/precise64 
-> vagrant up (Ubuntu 12.04)
+> vagrant up 
 > vagrant status
 > vagrant halt
 > vagrant suspend
@@ -20,8 +20,14 @@ PowerShell
 
 PowerShell
 ```
-> cd bionic
-> vagrant up (Ubuntu 18.04.2)
+> cd bionic (Ubuntu 18.04.2)
+
+###!!!! edit Vagranfile !!!!
+###    Vagrant.configure("2") do |config|
+###        config.vm.box = "ubuntu/bionic64"
+###    end
+
+> vagrant up
 > vagrant ssh
     $ sudo apt update
     $ sudo apt install -y nginx
@@ -42,12 +48,13 @@ PowerShell
 
 PowerShell
 ```
-> cd bionic
+> cd bionic (Ubuntu 18.04.2)
 
 !!!! edit Vagranfile !!!!
     config.vm.network "private_network", ip: "192.168.50.4"
 
-> vagrant up / vagrant reload (Ubuntu 18.04.2)
+> vagrant up / vagrant reload
+> vagrant ssh
 ```
 
 |Tools      |Links|
