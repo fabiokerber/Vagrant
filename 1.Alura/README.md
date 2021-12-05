@@ -61,6 +61,12 @@ PowerShell - bionic (Ubuntu 18.04.6)
 
 > vagrant up / vagrant reload
 > vagrant ssh
+
+** !!!! edit Vagranfile !!!!
+    config.vm.network "public_network", ip: "192.168.0.50" **
+
+> vagrant up / vagrant reload
+> vagrant ssh
 ```
 
 |Tools      |Links|
