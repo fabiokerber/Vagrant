@@ -1,7 +1,8 @@
 # 01.Alura
 
 ### Vagrant & Puppet & Ansible
-- **Início**
+
+**Início**
 
 *PowerShell - precise (Ubuntu 12.04)*
 ```
@@ -16,9 +17,9 @@
 > vagrant ssh-config
 ```
 
-### Port Forwarding
+**Port Forwarding**
 
-PowerShell - bionic (Ubuntu 18.04.6)
+*PowerShell - bionic (Ubuntu 18.04.6)*
 ```
 !!!! edit Vagranfile !!!!
     Vagrant.configure("2") do |config|
@@ -42,9 +43,9 @@ PowerShell - bionic (Ubuntu 18.04.6)
 !!!! navegador http://localhost:8089 !!!!
 ```
 
-### Private Network
+**Private Network**
 
-PowerShell - bionic (Ubuntu 18.04.6)
+*PowerShell - bionic (Ubuntu 18.04.6)*
 ```
 !!!! edit Vagranfile !!!!
     config.vm.network "private_network", ip: "192.168.50.4"
@@ -53,9 +54,9 @@ PowerShell - bionic (Ubuntu 18.04.6)
 > vagrant ssh
 ```
 
-### Public Network (Bridge)
+**Public Network (Bridge)**
 
-PowerShell - bionic (Ubuntu 18.04.6)
+*PowerShell - bionic (Ubuntu 18.04.6)*
 ```
 !!!! edit Vagranfile !!!!
     config.vm.network "public_network"
