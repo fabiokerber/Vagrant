@@ -201,12 +201,41 @@
             phpweb.vm.network "forwarded_port", guest:80, host:8089
             phpweb.vm.network "public_network", ip: "192.168.0.100"
 
+            phpweb.vm.provision "shell", inline: apt update && apt install -y puppet
+
         end
 
     end
 
+> vagrant destroy -f
+> vagrant up
 > vagrant ssh phpweb
 > vagrant ssh mysqldb
+```
+<br />
+
+**Multi-Machine**
+
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! create folder config/manifests !!!
+!!!! edit config/manifests/phpweb.pp !!!!
+    exec { 'apt-update':
+      command => '/usr/bin/apt-get update' 
+    }
+
+    package { ['php7.2' ,'php7.2-mysql'] :
+      require => Exec['apt-update'],
+      ensure => installed,
+    }
+
+    exec { 'run-php7':
+      require => Package['php7.2'],
+      command => '/usr/bin/php -S 192.168.1.25:8888 -t /vagrant/src &'
+    }
+
+
+
 ```
 <br />
 
@@ -215,4 +244,5 @@
 |`Vagrant Downloads`| https://www.vagrantup.com/downloads
 |`Vagrant Docs`| https://www.vagrantup.com/docs
 |`Virtualbox Downloads`| https://www.virtualbox.org/wiki/Downloads
+|`Puppet Lamp`| https://www.digitalocean.com/community/tutorials/getting-started-with-puppet-code-manifests-and-modules
 |`PowerShell`| Set-PSReadlineOption -BellStyle None
