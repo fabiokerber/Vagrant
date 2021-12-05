@@ -2,6 +2,7 @@
 
 ### Vagrant & Puppet & Ansible
 
+
 **Início**
 
 *PowerShell - precise (Ubuntu 12.04)*
