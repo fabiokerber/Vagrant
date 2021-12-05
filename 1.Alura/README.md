@@ -24,7 +24,7 @@
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     Vagrant.configure("2") do |config|
         config.vm.box = "ubuntu/bionic64"
     end
@@ -38,12 +38,12 @@
     $ exit
 > vagrant halt
 
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.network "forwarded_port", guest: 80, host:8089
 
 > vagrant up
 
-!!!! navegador http://localhost:8089 !!!!
+!!! navegador http://localhost:8089 !!!
 ```
 <br />
 
@@ -51,7 +51,7 @@
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.network "private_network", ip: "192.168.50.4"
 
 > vagrant up / vagrant reload
@@ -63,13 +63,13 @@
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.network "public_network"
 
 > vagrant up / vagrant reload
 > vagrant ssh
 
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.network "public_network", ip: "192.168.0.50"
 
 > vagrant up / vagrant reload
@@ -106,7 +106,7 @@
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.provision "shell", inline: "echo Hello, World >> hello.txt"
 
 > vagrant up / vagrant reload (Necessário forçar com o comando abaixo, pois o provision é somente no ato da criação)
@@ -125,7 +125,7 @@
 !!! create folder configs !!!
 !!! copy id_bionic.pub to configs !!!
 
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.synced_folder "./configs", "/configs" (Mapeia pasta configs dentro de bionic em /configs)
     config.vm.synced_folder ".", "/vagrant", disabled: true (Desabilita o mapeamento do conteúdo da pasta padrão "bionic")
 
@@ -139,7 +139,7 @@
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     $script_mysql = <<-SCRIPT
         apt-get update && \
         apt-get install -y mysql-server-5.7 && \
@@ -156,10 +156,10 @@
     mysql> ;
     $ cat /etc/mysql/mysql.conf.d/mysqld.cnf >> /configs/mysqld.cnf
 
-!!!! /configs/mysqld.cnf !!!!
+!!! /configs/mysqld.cnf !!!
     bind-address		= 0.0.0.0 (Permitir conexão externa a partir de qualquer host)
 
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     config.vm.provision "shell", inline: "cat /configs/mysqld.cnf > /etc/mysql/mysql.conf.d/mysqld.cnf"
     config.vm.provision "shell", inline: "service mysql restart"
 
@@ -172,7 +172,7 @@
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
-!!!! edit Vagranfile !!!!
+!!! edit Vagranfile !!!
     $script_mysql = <<-SCRIPT
         apt-get update && \
         apt-get install -y mysql-server-5.7 && \
@@ -201,7 +201,7 @@
             phpweb.vm.network "forwarded_port", guest:80, host:8089
             phpweb.vm.network "public_network", ip: "192.168.0.100"
 
-            phpweb.vm.provision "shell", inline: apt update && apt install -y puppet
+            phpweb.vm.provision "shell", inline: "apt update && apt install -y puppet"
 
         end
 
@@ -214,12 +214,12 @@
 ```
 <br />
 
-**Multi-Machine**
+**Puppet**
 
 *PowerShell - bionic (Ubuntu 18.04.6)*
 ```
 !!! create folder config/manifests !!!
-!!!! edit config/manifests/phpweb.pp !!!!
+!!! edit config/manifests/phpweb.pp !!!
     exec { 'apt-update':
       command => '/usr/bin/apt-get update' 
     }
@@ -231,10 +231,23 @@
 
     exec { 'run-php7':
       require => Package['php7.2'],
-      command => '/usr/bin/php -S 192.168.1.25:8888 -t /vagrant/src &'
+      command => '/usr/bin/php -S 0.0.0.0:8888 -t /vagrant/src &'
     }
+```
+<br />
 
+**Puppet + Ansible**
 
+*PowerShell - bionic (Ubuntu 18.04.6)*
+```
+!!! edit Vagranfile !!!
+        phpweb.vm.provision "puppet" do |puppet|
+
+            puppet.manifests_path = "./configs/manifests"
+            puppet.manifest_file = "phpweb.pp"
+
+!!! create folder src !!!
+!!! edit src/index.php !!!
 
 ```
 <br />

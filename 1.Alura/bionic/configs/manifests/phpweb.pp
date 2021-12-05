@@ -9,5 +9,5 @@ package { ['php7.2' ,'php7.2-mysql'] :
 
 exec { 'run-php7':
   require => Package['php7.2'],
-  command => '/usr/bin/php -S 192.168.0.100:8888 -t /vagrant/src &'
+  command => '/usr/bin/php -S 0.0.0.0:8888 -t /vagrant/src &'
 }
