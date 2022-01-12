@@ -1,6 +1,6 @@
 # Vagrant
 
-|Training     |Tools|
+|Folder     |Tools|
 |-------------|-----------|
 |`1.Alura`| Vagrant & Puppet & Ansible
 
