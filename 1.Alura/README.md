@@ -23,6 +23,10 @@
 > vagrant destroy <id> (conforme comando acima - funciona de qualquer pasta)
 > vagrant <comando> <id> (conforme exemplos acima)
 > vagrant box list
+> vagrant snapshot save win_server snap190120221650
+> vagrant snapshot restore win_server snap190120221650
+> vagrant snapshot list
+> vagrant snapshot delete win_server snap190120221650
 ```
 <br />
 
