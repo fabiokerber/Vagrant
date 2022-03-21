@@ -15,7 +15,7 @@ Self healing is better than depending on humans for several reasons:<br>
 
 ## Architecture<br>
 <kbd>
-    <img src="https://github.com/fabiokerber/lab/blob/main/zbx_awx_sh/draw/images/draw.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/zbx_awx_sh/draw/images/draw.png">
 </kbd>
 <br />
 <br />
