@@ -1,5 +1,9 @@
 Vagrant.configure('2') do |config|
 
+    $script_ansible = <<-SCRIPT
+        sudo -i && echo "export PATH=/root/.local/bin:${PATH}" >> ~/.bashrc && source ~/.bashrc
+    SCRIPT
+
     config.env.enable
     config.vm.boot_timeout = 1200
 
@@ -12,14 +16,16 @@ Vagrant.configure('2') do |config|
         ansible.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
         ansible.vm.provision 'shell', inline: 'sudo apt update'
 
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y libc6-dev git vim'
+        ansible.vm.provision 'shell', inline: $script_ansible
+
+        ansible.vm.provision 'shell', inline: 'sudo apt install -y libc6-dev vim git'
         ansible.vm.provision 'shell', inline: 'sudo apt install -y build-essential checkinstall'
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev'
+        ansible.vm.provision 'shell', inline: 'sudo apt install -y libreadline-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev'
         
         ansible.vm.provision 'shell', inline: 'wget -O /tmp/Python-3.9.13.tgz  https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz'
         ansible.vm.provision 'shell', inline: 'tar xzf /tmp/Python-3.9.13.tgz -C /usr/local/src/'
         ansible.vm.provision 'shell', inline: 'cd /usr/local/src/Python-3.9.13/ && ./configure --enable-optimizations && make altinstall'
-        
+
         ansible.vm.provision 'shell', inline: 'pip3.9 install --upgrade pip && pip3.9 install --upgrade setuptools'
         ansible.vm.provision 'shell', inline: 'pip3.9 install setuptools_rust wheel && pip3.9 install ansible'
         ansible.vm.provision 'shell', inline: 'pip3.9 install ansible-tower-cli'
@@ -28,8 +34,7 @@ Vagrant.configure('2') do |config|
         ansible.vm.provision 'shell', inline: 'export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"'
 
         ansible.vm.provision 'shell', inline: 'sudo mkdir -p /etc/ansible'
-        ansible.vm.provision 'shell', inline: 'sudo chmod 644 /var/log/ansible.log>>!#:2'
-        ansible.vm.provision 'shell', inline: 'sudo chmod 644 /etc/ansible/hosts>>!#:2'
+        ansible.vm.provision 'shell', inline: 'sudo touch {/var/log/ansible.log,/etc/ansible/hosts}'
         ansible.vm.provision 'shell', inline: 'sudo wget -O /etc/ansible/ansible.cfg https://raw.githubusercontent.com/fabiokerber/Ansible/main/Playbooks/install_awx/ansible.cfg'
 
         ansible.vm.provision 'shell', inline: 'echo "$IP runner.awx.lab" >> /etc/hosts', env: {"IP" => ENV['RUNNER_IP']}
@@ -54,6 +59,7 @@ Vagrant.configure('2') do |config|
         grafana_elk.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
         grafana_elk.vm.provision 'shell', inline: 'sudo apt update'
 
+        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y vim git'
         grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common'
         grafana_elk.vm.provision 'shell', inline: 'curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -'
         grafana_elk.vm.provision 'shell', inline: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"'
@@ -90,7 +96,7 @@ Vagrant.configure('2') do |config|
         runner.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
         runner.vm.provision 'shell', inline: 'sudo apt update'
 
-        runner.vm.provision 'shell', inline: 'sudo apt install -y libc6-dev git vim'
+        runner.vm.provision 'shell', inline: 'sudo apt install -y libc6-dev vim git'
         runner.vm.provision 'shell', inline: 'sudo apt install -y build-essential checkinstall'
         runner.vm.provision 'shell', inline: 'sudo apt install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev'
 
