@@ -30,11 +30,13 @@ Vagrant.configure('2') do |config|
         ansible.vm.provision 'shell', inline: 'pip3.9 install setuptools_rust wheel && pip3.9 install ansible'
         ansible.vm.provision 'shell', inline: 'pip3.9 install ansible-tower-cli'
         
-        ansible.vm.provision 'shell', inline: 'pip3.9 install --user ansible "ara[server]"'
+        ansible.vm.provision 'shell', inline: 'pip3.9 install ansible ara[server]'
         ansible.vm.provision 'shell', inline: 'export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"'
+        ansible.vm.provision 'shell', inline: 'export ARA_SETTINGS="/root/.ara/server/settings.yaml"'
 
         ansible.vm.provision 'shell', inline: 'sudo mkdir -p /etc/ansible'
         ansible.vm.provision 'shell', inline: 'sudo touch {/var/log/ansible.log,/etc/ansible/hosts}'
+        ansible.vm.provision 'shell', inline: 'sudo chmod 777 /var/log/ansible.log'
         ansible.vm.provision 'shell', inline: 'sudo wget -O /etc/ansible/ansible.cfg https://raw.githubusercontent.com/fabiokerber/Ansible/main/Playbooks/install_awx/ansible.cfg'
 
         ansible.vm.provision 'shell', inline: 'echo "$IP runner.awx.lab" >> /etc/hosts', env: {"IP" => ENV['RUNNER_IP']}
