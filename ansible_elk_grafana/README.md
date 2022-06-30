@@ -1,12 +1,8 @@
 ARA
 ```
-# ara-manage migrate
-
 Checar configs
 # python3 -m ara.setup.action_plugins
 # python3 -m ara.setup.callback_plugins
-
-# export ARA_SETTINGS="/root/.ara/server/settings.yaml"
 
 # vim /root/.ara/server/settings.yaml
 
@@ -32,10 +28,6 @@ default:
 
 # ara-manage runserver
 
-vim /etc/ansible/ansible.cfg
-[defaults]
-callback_plugins=/root/.local/lib/python3.9/site-packages/ara/plugins/callback
-action_plugins=/root/.local/lib/python3.9/site-packages/ara/plugins/action
-lookup_plugins=/root/.local/lib/python3.9/site-packages/ara/plugins/lookup
+# ara result list
 
 ```
