@@ -37,7 +37,7 @@ Vagrant.configure('2') do |config|
         ansible.vm.provision 'shell', inline: 'sudo mkdir -p /etc/ansible'
         ansible.vm.provision 'shell', inline: 'sudo touch {/var/log/ansible.log,/etc/ansible/hosts}'
         ansible.vm.provision 'shell', inline: 'sudo chmod 777 /var/log/ansible.log'
-        ansible.vm.provision 'shell', inline: 'sudo wget -O /etc/ansible/ansible.cfg https://raw.githubusercontent.com/fabiokerber/Ansible/main/Playbooks/install_awx/ansible.cfg'
+        ansible.vm.provision 'shell', inline: 'sudo wget -O /etc/ansible/ansible.cfg https://raw.githubusercontent.com/fabiokerber/Vagrant/main/ansible_elk_grafana/files/ansible.cfg'
 
         ansible.vm.provision 'shell', inline: 'echo "$IP runner.awx.lab" >> /etc/hosts', env: {"IP" => ENV['RUNNER_IP']}
         ansible.vm.provision 'shell', inline: 'echo "$IP log.awx.lab" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
