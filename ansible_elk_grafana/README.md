@@ -239,14 +239,13 @@ Foreman Services Status
 | Port | Protocol | Required For |
 |-------------|-----------|-----------|
 |`53`| TCP & UDP | DNS Server |
+|`67, 68`| UDP | DHCP Server |
+|`69`| UDP | TFTP Server |
+|`80, 443`| TCP | * HTTP & HTTPS access to Foreman web UI / provisioning templates - using Apache |
+|`3000`| TCP | HTTP access to Foreman web UI / provisioning templates - using standalone WEBrick service |
+|`5910 - 5930`| TCP | Server VNC Consoles |
+|`5432`| TCP | Separate PostgreSQL database |
+|`8140`| TCP | * Puppet server |
+|`8443`| TCP | Smart Proxy, open only to Foreman |
 
-Port	Protocol	Required For
-53	TCP & UDP	DNS Server
-67, 68	UDP	DHCP Server
-69	UDP	TFTP Server
-80, 443	TCP	* HTTP & HTTPS access to Foreman web UI / provisioning templates - using Apache
-3000	TCP	HTTP access to Foreman web UI / provisioning templates - using standalone WEBrick service
-5910 - 5930	TCP	Server VNC Consoles
-5432	TCP	Separate PostgreSQL database
-8140	TCP	* Puppet server
-8443	TCP	Smart Proxy, open only to Foreman
+**Ports indicated with * are running by default on a Foreman all-in-one installation and should be open.**<br>
