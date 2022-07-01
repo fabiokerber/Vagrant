@@ -1,62 +1,62 @@
 Vagrant.configure('2') do |config|
 
-#    $script_ansible = <<-SCRIPT
+#    $script_foreman = <<-SCRIPT
 #        sudo -i && echo "export PATH=/root/.local/bin:${PATH}" >> ~/.bashrc && source ~/.bashrc
 #    SCRIPT
 
     config.env.enable
     config.vm.boot_timeout = 1200
 
-    config.vm.define 'foreman' do |ansible|
+    config.vm.define 'foreman' do |foreman|
 
-        ansible.vm.box = 'debian/bullseye64'
-        ansible.vm.hostname = 'ansible.aut.lab'
-        ansible.vm.network 'public_network', ip: ENV['ANSIBLE_IP'], bridge: ENV['INTERFACE']
+        foreman.vm.box = 'debian/bullseye64'
+        foreman.vm.hostname = 'foreman.aut.lab'
+        foreman.vm.network 'public_network', ip: ENV['FOREMAN_IP'], bridge: ENV['INTERFACE']
 
-        ansible.vm.provision 'shell', inline: 'sudo sed -i "/127.0.1.1/d" /etc/hosts'
-        ansible.vm.provision 'shell', inline: 'echo "$IP ansible.aut.lab ansible" >> /etc/hosts', env: {"IP" => ENV['ANSIBLE_IP']}
-        ansible.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
-        ansible.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
-        ansible.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
+        foreman.vm.provision 'shell', inline: 'sudo sed -i "/127.0.1.1/d" /etc/hosts'
+        foreman.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
+        foreman.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
+        foreman.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
+        foreman.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
 
-        ansible.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
-        ansible.vm.provision 'shell', inline: 'sudo apt update'
+        foreman.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
+        foreman.vm.provision 'shell', inline: 'sudo apt update'
 
-#        ansible.vm.provision 'shell', inline: $script_ansible
+#        foreman.vm.provision 'shell', inline: $script_foreman
 
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y libc6-dev vim git curl ca-certificates'
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y build-essential checkinstall'
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y libreadline-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev'
+        foreman.vm.provision 'shell', inline: 'sudo apt install -y libc6-dev vim git curl ca-certificates'
+        foreman.vm.provision 'shell', inline: 'sudo apt install -y build-essential checkinstall'
+        foreman.vm.provision 'shell', inline: 'sudo apt install -y libreadline-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev'
+
+        foreman.vm.provision 'shell', inline: 'wget -O /tmp/Python-3.9.13.tgz  https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz'
+        foreman.vm.provision 'shell', inline: 'tar xzf /tmp/Python-3.9.13.tgz -C /usr/local/src/'
+        foreman.vm.provision 'shell', inline: 'cd /usr/local/src/Python-3.9.13/ && ./configure --enable-optimizations && make altinstall'
+
+        foreman.vm.provision 'shell', inline: 'pip3.9 install --upgrade pip && pip3.9 install --upgrade setuptools'
+        foreman.vm.provision 'shell', inline: 'pip3.9 install setuptools_rust wheel && pip3.9 install ansible'
+        foreman.vm.provision 'shell', inline: 'pip3.9 install ansible-tower-cli'
         
-        ansible.vm.provision 'shell', inline: 'wget -O /tmp/Python-3.9.13.tgz  https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz'
-        ansible.vm.provision 'shell', inline: 'tar xzf /tmp/Python-3.9.13.tgz -C /usr/local/src/'
-        ansible.vm.provision 'shell', inline: 'cd /usr/local/src/Python-3.9.13/ && ./configure --enable-optimizations && make altinstall'
+        foreman.vm.provision 'shell', inline: 'sudo mkdir -p /etc/ansible'
+        foreman.vm.provision 'shell', inline: 'sudo touch {/var/log/ansible.log,/etc/ansible/hosts}'
+        foreman.vm.provision 'shell', inline: 'sudo chmod 777 /var/log/ansible.log'
+        foreman.vm.provision 'shell', inline: 'sudo wget -O /etc/ansible/ansible.cfg https://raw.githubusercontent.com/fabiokerber/Vagrant/main/ansible_elk_grafana/files/ansible.cfg'
 
-        ansible.vm.provision 'shell', inline: 'pip3.9 install --upgrade pip && pip3.9 install --upgrade setuptools'
-        ansible.vm.provision 'shell', inline: 'pip3.9 install setuptools_rust wheel && pip3.9 install ansible'
-        ansible.vm.provision 'shell', inline: 'pip3.9 install ansible-tower-cli'
-        
-        ansible.vm.provision 'shell', inline: 'sudo mkdir -p /etc/ansible'
-        ansible.vm.provision 'shell', inline: 'sudo touch {/var/log/ansible.log,/etc/ansible/hosts}'
-        ansible.vm.provision 'shell', inline: 'sudo chmod 777 /var/log/ansible.log'
-        ansible.vm.provision 'shell', inline: 'sudo wget -O /etc/ansible/ansible.cfg https://raw.githubusercontent.com/fabiokerber/Vagrant/main/ansible_elk_grafana/files/ansible.cfg'
+        foreman.vm.provision 'shell', inline: 'wget -O /tmp/puppet7-release-bullseye.deb https://apt.puppet.com/puppet7-release-bullseye.deb'
+        foreman.vm.provision 'shell', inline: 'sudo apt install -y /tmp/puppet7-release-bullseye.deb'
 
-        ansible.vm.provision 'shell', inline: 'wget -O /tmp/puppet7-release-bullseye.deb https://apt.puppet.com/puppet7-release-bullseye.deb'
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y /tmp/puppet7-release-bullseye.deb'
+        foreman.vm.provision 'shell', inline: 'sudo wget https://deb.theforeman.org/foreman.asc -O /etc/apt/trusted.gpg.d/foreman.asc'
+        foreman.vm.provision 'shell', inline: 'echo "deb http://deb.theforeman.org/ bullseye 3.2" | sudo tee /etc/apt/sources.list.d/foreman.list'
+        foreman.vm.provision 'shell', inline: 'echo "deb http://deb.theforeman.org/ plugins 3.2" | sudo tee -a /etc/apt/sources.list.d/foreman.list'
+        foreman.vm.provision 'shell', inline: 'sudo apt update'
+        foreman.vm.provision 'shell', inline: 'sudo apt install -y foreman-installer'
+#        foreman.vm.provision 'shell', inline: 'sudo dpkg-reconfigure locales'
+#        foreman.vm.provision 'shell', inline: 'init 6'
+#        foreman.vm.provision 'shell', inline: 'sudo foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh}'
 
-        ansible.vm.provision 'shell', inline: 'sudo wget https://deb.theforeman.org/foreman.asc -O /etc/apt/trusted.gpg.d/foreman.asc'
-        ansible.vm.provision 'shell', inline: 'echo "deb http://deb.theforeman.org/ bullseye 3.2" | sudo tee /etc/apt/sources.list.d/foreman.list'
-        ansible.vm.provision 'shell', inline: 'echo "deb http://deb.theforeman.org/ plugins 3.2" | sudo tee -a /etc/apt/sources.list.d/foreman.list'
-        ansible.vm.provision 'shell', inline: 'sudo apt update'
-        ansible.vm.provision 'shell', inline: 'sudo apt install -y foreman-installer'
-#        ansible.vm.provision 'shell', inline: 'sudo dpkg-reconfigure locales'
-#        ansible.vm.provision 'shell', inline: 'init 6'
-#        ansible.vm.provision 'shell', inline: 'sudo foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh}'
-
-        ansible.vm.provider 'virtualbox' do |vb|
+        foreman.vm.provider 'virtualbox' do |vb|
             vb.memory = 8192
             vb.cpus = 4
-            vb.name = 'ansible.aut.lab'
+            vb.name = 'foreman.aut.lab'
             vb.customize ['modifyvm', :id, '--nicpromisc2', 'allow-all']
 
         end
@@ -69,7 +69,7 @@ Vagrant.configure('2') do |config|
         grafana_elk.vm.hostname = 'log.aut.lab'
         grafana_elk.vm.network 'public_network', ip: ENV['LOG_IP'], bridge: ENV['INTERFACE']
 
-        grafana_elk.vm.provision 'shell', inline: 'echo "$IP ansible.aut.lab ansible" >> /etc/hosts', env: {"IP" => ENV['ANSIBLE_IP']}
+        grafana_elk.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
 
@@ -107,7 +107,7 @@ Vagrant.configure('2') do |config|
         srv01.vm.hostname = 'srv01.aut.lab'
         srv01.vm.network 'public_network', ip: ENV['SRV01_IP'], bridge: ENV['INTERFACE']
 
-        srv01.vm.provision 'shell', inline: 'echo "$IP ansible.aut.lab ansible" >> /etc/hosts', env: {"IP" => ENV['ANSIBLE_IP']}
+        srv01.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         srv01.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
         srv01.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
 
@@ -130,7 +130,7 @@ Vagrant.configure('2') do |config|
         srv02.vm.hostname = 'srv02.aut.lab'
         srv02.vm.network 'public_network', ip: ENV['SRV02_IP'], bridge: ENV['INTERFACE']
 
-        srv02.vm.provision 'shell', inline: 'echo "$IP ansible.aut.lab ansible" >> /etc/hosts', env: {"IP" => ENV['ANSIBLE_IP']}
+        srv02.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         srv02.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
         srv02.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
 

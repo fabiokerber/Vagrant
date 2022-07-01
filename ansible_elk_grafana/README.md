@@ -225,9 +225,8 @@ srv02 ansible_host=192.168.0.191
 
 Generate keygen
 # ssh-keygen -t rsa auto yes
-
-# ansible-playbook -u root --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
- - Verificar envio dessa chave aos hosts
+# ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub root@target.example.com
+# ansible-playbook /tmp/hosts_setup.yml -u root --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
 
 Import roles
 # /etc/ansible/roles
@@ -237,6 +236,15 @@ Assign roles to hosts and them execute
 Foreman Services Status
 # foreman-maintain service status -b
  - Verificar comando
+
+Create a job template:
+# hammer job-template create --file /tmp/template.txt --name "Ping a Host" --provider-type SSH --job-category "Commands"
+
+Run a job:
+# hammer job-invocation create --job-template "Run Command - SSH Default" --inputs command="ping -c 50 www.google.com" --search-query "name ~ rex01"
+
+Show output from a job:
+# hammer job-invocation output --id 155 --host rex01.example.com
 
 ```
 
