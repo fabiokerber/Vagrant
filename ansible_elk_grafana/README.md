@@ -35,16 +35,16 @@ default:
 # ansible-playbook /vagrant/playbook.yaml
 ```
 
-https://github.com/ansible-community/ara-collection
-https://speakerdeck.com/tonk/ara-on-rhel7-welcome-to-hell?slide=12
-http://tonkersten.com/files/makeara
-https://ara.readthedocs.io/en/latest/api-security.html
-https://sebiwi.github.io/blog/ara/
-https://ara.readthedocs.io/en/stable-0.x/webserver.html
-https://github.com/ansible-community/ara
-https://github.com/ansible-community/ara-collection
-https://buildmedia.readthedocs.org/media/pdf/ara/latest/ara.pdf
-https://ara.readthedocs.io/en/stable-0.x/configuration.html
+https://github.com/ansible-community/ara-collection<br>
+https://speakerdeck.com/tonk/ara-on-rhel7-welcome-to-hell?slide=12<br>
+http://tonkersten.com/files/makeara<br>
+https://ara.readthedocs.io/en/latest/api-security.html<br>
+https://sebiwi.github.io/blog/ara/<br>
+https://ara.readthedocs.io/en/stable-0.x/webserver.html<br>
+https://github.com/ansible-community/ara<br>
+https://github.com/ansible-community/ara-collection<br>
+https://buildmedia.readthedocs.org/media/pdf/ara/latest/ara.pdf<br>
+https://ara.readthedocs.io/en/stable-0.x/configuration.html<br>
 
 ```
 #!/bin/bash
@@ -188,18 +188,18 @@ ansible.vm.provision 'shell', inline: 'ara-manage migrate'
 
 # FOREMAN
 
-```
-https://www.youtube.com/watch?v=PQYCiJlnpHM
-https://www.youtube.com/watch?v=jC0c3kv2ofA
-https://theforeman.org/manuals/3.3/index.html
-https://github.com/ATIX-AG/foreman_acd
-https://groups.google.com/g/ansible-project/c/IJL4SXWPgL8
-https://pt.slideshare.net/NikhilKathole/ansible-integration-in-foreman
-https://docs.w3cub.com/ansible/collections/theforeman/foreman/index
-https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation
-https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/
-https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html
+https://www.youtube.com/watch?v=PQYCiJlnpHM<br>
+https://www.youtube.com/watch?v=jC0c3kv2ofA<br>
+https://theforeman.org/manuals/3.3/index.html<br>
+https://github.com/ATIX-AG/foreman_acd<br>
+https://groups.google.com/g/ansible-project/c/IJL4SXWPgL8<br>
+https://pt.slideshare.net/NikhilKathole/ansible-integration-in-foreman<br>
+https://docs.w3cub.com/ansible/collections/theforeman/foreman/index<br>
+https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation<br>
+https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/<br>
+https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html<br>
 
+```
 Ansible.cfg
 [callback_foreman]
 url = 'https://ansible.aut.lab'
@@ -237,8 +237,8 @@ Foreman Services Status
 ```
 
 | Port | Protocol | Required For |
-|-------------|-----------|
-|`53`| TCP & UDP | DNS Server
+|-------------|-----------|-----------|
+|`53`| TCP & UDP | DNS Server |
 
 Port	Protocol	Required For
 53	TCP & UDP	DNS Server
