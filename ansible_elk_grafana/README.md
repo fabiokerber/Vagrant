@@ -1,4 +1,5 @@
-ARA
+# ARA
+
 ```
 Checar configs
 # python3 -m ara.setup.action_plugins
@@ -11,7 +12,7 @@ default:
   - ::1
   - 127.0.0.1
   - localhost
-  - 0.0.
+  - 192.168.0.16
   BASE_DIR: /root/.ara/server
   CORS_ORIGIN_ALLOW_ALL: false
   CORS_ORIGIN_REGEX_WHITELIST: []
@@ -24,15 +25,17 @@ default:
   DATABASE_HOST: null
   DATABASE_NAME: /root/.ara/server/ansible.sqlite
   DATABASE_OPTIONS: {}
+```
 
+```
 # ara-manage runserver
 
 # ara result list
 
 # ansible-playbook /vagrant/playbook.yaml
+```
 
 https://github.com/ansible-community/ara-collection
-
 https://speakerdeck.com/tonk/ara-on-rhel7-welcome-to-hell?slide=12
 http://tonkersten.com/files/makeara
 https://ara.readthedocs.io/en/latest/api-security.html
@@ -43,7 +46,7 @@ https://github.com/ansible-community/ara-collection
 https://buildmedia.readthedocs.org/media/pdf/ara/latest/ara.pdf
 https://ara.readthedocs.io/en/stable-0.x/configuration.html
 
-###############################################
+```
 #!/bin/bash
 # vi: set sw=4 ts=4 ai:
 
@@ -174,6 +177,59 @@ exit
 /root/.local/bin/ara-manage runserver 0.0.0.0:8000 >/dev/null 2>&1 &
 cd /root/.ara/ara-web
 npm start &
-##################################
+```
+
+```
+ansible.vm.provision 'shell', inline: 'pip3.9 install ansible ara[server]'
+ansible.vm.provision 'shell', inline: 'export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"'
+ansible.vm.provision 'shell', inline: 'export ARA_SETTINGS="/root/.ara/server/settings.yaml"'
+ansible.vm.provision 'shell', inline: 'ara-manage migrate'
+```
+
+# FOREMAN
+
+```
+https://www.youtube.com/watch?v=PQYCiJlnpHM
+https://www.youtube.com/watch?v=jC0c3kv2ofA
+https://theforeman.org/manuals/3.3/index.html
+https://github.com/ATIX-AG/foreman_acd
+https://groups.google.com/g/ansible-project/c/IJL4SXWPgL8
+https://pt.slideshare.net/NikhilKathole/ansible-integration-in-foreman
+https://docs.w3cub.com/ansible/collections/theforeman/foreman/index
+https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation
+
+Ansible.cfg
+[callback_foreman]
+url = 'https://ansible.aut.lab'
+
+# foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh}
+# foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh} --foreman-proxy-plugin-remote-execution-ssh-install-key=true
+
+Import hosts to the Foreman
+# sudo -u foreman-proxy -s /bin/bash
+
+# less /tmp/inventory
+srv-01 ansible_host=192.168.0.15
+srv-02 ansible_host=192.168.0.16
+
+# less /tmp/hosts_setup.yml
+---
+
+- hosts: all
+  tasks:
+    - setup:
+
+...
+
+# ansible-playbook -u root --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
+ - Verificar envio dessa chave aos hosts
+
+Import roles
+# /etc/ansible/roles
+
+Assign roles to hosts and them execute
+
+Foreman Services Status
+# foreman-maintain service status -b
 
 ```
