@@ -197,6 +197,8 @@ https://groups.google.com/g/ansible-project/c/IJL4SXWPgL8
 https://pt.slideshare.net/NikhilKathole/ansible-integration-in-foreman
 https://docs.w3cub.com/ansible/collections/theforeman/foreman/index
 https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation
+https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/
+https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html
 
 Ansible.cfg
 [callback_foreman]
@@ -233,3 +235,18 @@ Foreman Services Status
 # foreman-maintain service status -b
 
 ```
+
+| Port | Protocol | Required For |
+|-------------|-----------|
+|`53`| TCP & UDP | DNS Server
+
+Port	Protocol	Required For
+53	TCP & UDP	DNS Server
+67, 68	UDP	DHCP Server
+69	UDP	TFTP Server
+80, 443	TCP	* HTTP & HTTPS access to Foreman web UI / provisioning templates - using Apache
+3000	TCP	HTTP access to Foreman web UI / provisioning templates - using standalone WEBrick service
+5910 - 5930	TCP	Server VNC Consoles
+5432	TCP	Separate PostgreSQL database
+8140	TCP	* Puppet server
+8443	TCP	Smart Proxy, open only to Foreman
