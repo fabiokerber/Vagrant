@@ -236,7 +236,7 @@ Foreman Services Status
 
 ```
 
-| Port | Protocol | Required For |
+|**Port**|**Protocol**|**Required For**|
 |-------------|-----------|-----------|
 |`53`| TCP & UDP | DNS Server |
 |`67, 68`| UDP | DHCP Server |
@@ -248,4 +248,4 @@ Foreman Services Status
 |`8140`| TCP | * Puppet server |
 |`8443`| TCP | Smart Proxy, open only to Foreman |
 
-**Ports indicated with * are running by default on a Foreman all-in-one installation and should be open.**<br>
+*Ports indicated with * are running by default on a Foreman all-in-one installation and should be open.*<br>
