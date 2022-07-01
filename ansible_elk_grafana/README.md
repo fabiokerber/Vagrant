@@ -210,11 +210,11 @@ url = 'https://ansible.aut.lab'
 Import hosts to the Foreman
 # sudo -u foreman-proxy -s /bin/bash
 
-# less /tmp/inventory
-srv-01 ansible_host=192.168.0.15
-srv-02 ansible_host=192.168.0.16
+# vim /tmp/inventory
+srv01 ansible_host=192.168.0.190
+srv02 ansible_host=192.168.0.191
 
-# less /tmp/hosts_setup.yml
+# vim /tmp/hosts_setup.yml
 ---
 
 - hosts: all
@@ -222,6 +222,9 @@ srv-02 ansible_host=192.168.0.16
     - setup:
 
 ...
+
+Generate keygen
+# ssh-keygen -t rsa auto yes
 
 # ansible-playbook -u root --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
  - Verificar envio dessa chave aos hosts
@@ -233,6 +236,7 @@ Assign roles to hosts and them execute
 
 Foreman Services Status
 # foreman-maintain service status -b
+ - Verificar comando
 
 ```
 
