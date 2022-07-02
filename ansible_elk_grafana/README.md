@@ -199,22 +199,47 @@ https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation<br>
 https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/<br>
 https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html<br>
 
+
+**Install/Configure**
 ```
+# vim /etc/ansible/ansible.cfg
 Ansible.cfg
 [callback_foreman]
-url = 'https://ansible.aut.lab'
+url = 'https://foreman.aut.lab'
+
+# vim /etc/foreman-proxy/ansible.cfg
 
 # foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh}
 # foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh} --foreman-proxy-plugin-remote-execution-ssh-install-key=true
+```
 
-Import hosts to the Foreman
+**Create Ansible User (srv01, srv02)**
+```
+# sudo useradd -r -m ansible
+# tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (generate password)
+# sudo passwd ansible
+
+# vim /etc/ssh/sshd_config
+  PasswordAuthentication yes
+  AllowUsers ansible
+
+# systemctl restart sshd
+```
+
+**Import hosts to the Foreman**
+```
 # sudo -u foreman-proxy -s /bin/bash
 
-# vim /tmp/inventory
+Generate keygen
+$ ssh-keygen -t rsa
+$ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv01.aut.lab
+$ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv02.aut.lab
+
+$ vim /tmp/inventory
 srv01 ansible_host=192.168.0.190
 srv02 ansible_host=192.168.0.191
 
-# vim /tmp/hosts_setup.yml
+$ vim /tmp/hosts_setup.yml
 ---
 
 - hosts: all
@@ -223,20 +248,38 @@ srv02 ansible_host=192.168.0.191
 
 ...
 
-Generate keygen
-# ssh-keygen -t rsa auto yes
-# ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub root@target.example.com
-# ansible-playbook /tmp/hosts_setup.yml -u root --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
+$ ansible-playbook /tmp/hosts_setup.yml -u ansible --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
+```
 
-Import roles
+**Remote Execution SSH Another User**
+```
+Edit host parameters:
+remote_execution_ssh_user | string | ansible
+
+"The granularity is per host/host group/subnet/domain/os/organization/location"
+https://community.theforeman.org/t/remote-execution-ssh-user/6091
+```
+
+**Import roles**
+```
 # /etc/ansible/roles
-
 Assign roles to hosts and them execute
+```
 
-Foreman Services Status
+**Cockpit**
+```
+https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html
+https://cockpit-project.org/running.html
+```
+
+**Foreman Services Status**
+```
 # foreman-maintain service status -b
  - Verificar comando
+```
 
+**Hammer**
+```
 Create a job template:
 # hammer job-template create --file /tmp/template.txt --name "Ping a Host" --provider-type SSH --job-category "Commands"
 
@@ -245,7 +288,6 @@ Run a job:
 
 Show output from a job:
 # hammer job-invocation output --id 155 --host rex01.example.com
-
 ```
 
 |**Port**|**Protocol**|**Required For**|

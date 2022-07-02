@@ -130,6 +130,8 @@ Vagrant.configure('2') do |config|
         srv02.vm.hostname = 'srv02.aut.lab'
         srv02.vm.network 'public_network', ip: ENV['SRV02_IP'], bridge: ENV['INTERFACE']
 
+        srv02.vm.provision 'shell', inline: 'sudo yum install -y vim'
+
         srv02.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         srv02.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
         srv02.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
