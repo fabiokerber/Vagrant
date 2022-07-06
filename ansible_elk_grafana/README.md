@@ -199,31 +199,35 @@ https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation<br>
 https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/<br>
 https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html<br>
 
+**Log Foreman**
+```
+> /var/log/foreman/production.log
+```
 
 **Install/Configure**
 ```
-# vim /etc/ansible/ansible.cfg
-Ansible.cfg
-[callback_foreman]
-url = 'https://foreman.aut.lab'
-
-# vim /etc/foreman-proxy/ansible.cfg
-
 # foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh}
-# foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh} --foreman-proxy-plugin-remote-execution-ssh-install-key=true
+# foreman-installer --enable-foreman-plugin-{remote-execution,ansible} --enable-foreman-proxy-plugin-{ansible,remote-execution-ssh} --foreman-proxy-plugin-remote-execution-ssh-install-key=true (não recomendado em Prod)
+
+(Atenção)
+> /etc/ansible/ansible.cfg
+> /etc/foreman-proxy/ansible.cfg
+> /usr/share/foreman-proxy/.ansible.cfg
 ```
 
 **Create Ansible User (srv01, srv02)**
 ```
-# sudo useradd -r -m ansible
-# tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (generate password)
-# sudo passwd ansible
+$ sudo useradd -r -m ansible
+$ tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (generate password)
+$ sudo passwd ansible
 
-# vim /etc/ssh/sshd_config
-  PasswordAuthentication yes
-  AllowUsers ansible
+$ sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+$ sudo bash -c 'echo "AllowUsers ansible" >> /etc/ssh/sshd_config'
+$ sudo systemctl restart sshd
 
-# systemctl restart sshd
+$ sudo update-alternatives --config editor (Ubuntu Server somente)
+$ sudo bash -c 'visudo'
+  ansible ALL=(ALL) NOPASSWD:ALL
 ```
 
 **Import hosts to the Foreman**
@@ -249,12 +253,14 @@ $ vim /tmp/hosts_setup.yml
 ...
 
 $ ansible-playbook /tmp/hosts_setup.yml -u ansible --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
+$ ansible-playbook /tmp/hosts_setup.yml -u ansible -k -i /tmp/inventory (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
 ```
 
 **Remote Execution SSH Another User**
 ```
 Edit host parameters:
 remote_execution_ssh_user | string | ansible
+remote_execution_ssh_password | string | <ansible_user_password> (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
 
 "The granularity is per host/host group/subnet/domain/os/organization/location"
 https://community.theforeman.org/t/remote-execution-ssh-user/6091
@@ -266,12 +272,6 @@ https://community.theforeman.org/t/remote-execution-ssh-user/6091
 Assign roles to hosts and them execute
 ```
 
-**Cockpit**
-```
-https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html
-https://cockpit-project.org/running.html
-```
-
 **Foreman Services Status**
 ```
 # foreman-maintain service status -b
@@ -280,14 +280,17 @@ https://cockpit-project.org/running.html
 
 **Hammer**
 ```
-Create a job template:
-# hammer job-template create --file /tmp/template.txt --name "Ping a Host" --provider-type SSH --job-category "Commands"
+Foreman user list:
+# hammer user list
 
-Run a job:
-# hammer job-invocation create --job-template "Run Command - SSH Default" --inputs command="ping -c 50 www.google.com" --search-query "name ~ rex01"
+Foreman list architecture
+#hammer architecture list
+```
 
-Show output from a job:
-# hammer job-invocation output --id 155 --host rex01.example.com
+**Cockpit**
+```
+https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html
+https://cockpit-project.org/running.html
 ```
 
 |**Port**|**Protocol**|**Required For**|
