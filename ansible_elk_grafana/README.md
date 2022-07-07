@@ -215,6 +215,35 @@ https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7
 > /usr/share/foreman-proxy/.ansible.cfg
 ```
 
+**Settings (FE)**
+```
+Settings > Authentication > Trusted hosts
+"List of hostnames, IPv4, IPv6 addresses or subnets to be trusted in addition to Smart Proxies for access to fact/report importers and ENC output"
+e.g.: mgm-puppetmaster01.manager, mgm-puppetmaster02.manager, mgm-puppetmaster03.manager
+
+Settings > Facts > Create new host when facts are uploaded
+"Foreman will create the host when new facts are received"
+> "No"
+
+Settings > Remote Execution > SSH User
+"Default user to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_user (e.g.: host parameters)."
+> ansible
+
+Settings > Remote Execution > Default SSH password
+"Default password to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_password (e.g.: host parameters)."
+> <ansible_user_password>
+```
+
+**Remote Execution SSH Another User (FE)**
+```
+Edit host parameters:
+remote_execution_ssh_user | string | ansible
+remote_execution_ssh_password | string | <ansible_user_password> (Somente quando solicita senha do usuario ansible para casos que não enviou a key ao destino)
+
+"The granularity is per host/host group/subnet/domain/os/organization/location"
+https://community.theforeman.org/t/remote-execution-ssh-user/6091
+```
+
 **Create Ansible User (srv01, srv02)**
 ```
 $ sudo useradd -r -m ansible
@@ -222,7 +251,9 @@ $ tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (generate password)
 $ sudo passwd ansible
 
 $ sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+$ sudo bash -c 'echo "AllowUsers root" >> /etc/ssh/sshd_config'
 $ sudo bash -c 'echo "AllowUsers ansible" >> /etc/ssh/sshd_config'
+$ sudo bash -c 'echo "AllowUsers fabio" >> /etc/ssh/sshd_config'
 $ sudo systemctl restart sshd
 
 $ sudo update-alternatives --config editor (Ubuntu Server somente)
@@ -230,7 +261,7 @@ $ sudo bash -c 'visudo'
   ansible ALL=(ALL) NOPASSWD:ALL
 ```
 
-**Import hosts to the Foreman**
+**Import hosts to the Foreman (user foreman-proxy)**
 ```
 # sudo -u foreman-proxy -s /bin/bash
 
@@ -239,11 +270,11 @@ $ ssh-keygen -t rsa
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv01.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv02.aut.lab
 
-$ vim /tmp/inventory
+$ vim ~/inventory
 srv01 ansible_host=192.168.0.190
 srv02 ansible_host=192.168.0.191
 
-$ vim /tmp/hosts_setup.yml
+$ vim ~/hosts_setup.yml
 ---
 
 - hosts: all
@@ -252,39 +283,39 @@ $ vim /tmp/hosts_setup.yml
 
 ...
 
-$ ansible-playbook /tmp/hosts_setup.yml -u ansible --private-key ~/.ssh/id_rsa_foreman_proxy -i /tmp/inventory
-$ ansible-playbook /tmp/hosts_setup.yml -u ansible -k -i /tmp/inventory (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
+$ ansible-playbook ~/hosts_setup.yml -u ansible --private-key ~/.ssh/id_rsa_foreman_proxy -i ~/inventory
+$ ansible-playbook ~/hosts_setup.yml -u ansible -k -i ~/inventory (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
 ```
 
-**Remote Execution SSH Another User**
+**Import roles (CLI & FE)**
 ```
-Edit host parameters:
-remote_execution_ssh_user | string | ansible
-remote_execution_ssh_password | string | <ansible_user_password> (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
+# git clone https://github.com/fabiokerber/Ansible.git /tmp/Ansible
+# cp -r /tmp/Ansible/Playbooks/install_package /etc/ansible/roles
 
-"The granularity is per host/host group/subnet/domain/os/organization/location"
-https://community.theforeman.org/t/remote-execution-ssh-user/6091
+Menu > Configure > Ansible Roles
+"Import from foreman.aut.lab" & Select & "Submit"
+
+Foreman Command:
+# rm -rf /etc/ansible/roles/* && rm -rf /tmp/Ansible && git clone https://github.com/fabiokerber/Ansible.git /tmp/Ansible && cp -r /tmp/Ansible/Playbooks/install_package /etc/ansible/roles
+$ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k -i ~/inventory
+$ 
 ```
 
-**Import roles**
+**Hammer (user foreman-proxy)**
 ```
-# /etc/ansible/roles
-Assign roles to hosts and them execute
+# sudo -u foreman-proxy -s /bin/bash
+
+Foreman user list:
+$ hammer user list
+
+Foreman list architecture
+$ hammer architecture list
 ```
 
 **Foreman Services Status**
 ```
 # foreman-maintain service status -b
  - Verificar comando
-```
-
-**Hammer**
-```
-Foreman user list:
-# hammer user list
-
-Foreman list architecture
-#hammer architecture list
 ```
 
 **Cockpit**
