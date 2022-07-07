@@ -10,6 +10,7 @@ https://docs.w3cub.com/ansible/collections/theforeman/foreman/index<br>
 https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation<br>
 https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/<br>
 https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html<br>
+https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html#Synchronizing_Templates_Repositories_managing-hosts<br>
 
 **Log Foreman**
 ```
@@ -106,6 +107,107 @@ Select Action > Schedule Remote Job
   Job template: Package Action - SSH Default
   Action: install
   Package: nginx
+```
+
+**Job Templates**
+https://www.youtube.com/watch?v=jC0c3kv2ofA<br>
+```
+Hosts > Templates > Job Templates
+  Template
+    Name: SAPO - SSH Install Package
+    Editor:
+      sudo apt install -y <%= input('package') %>
+      sudo apt list --installed | grep <%= input('package') %>
+
+  Inputs
+    Name: package
+    Required: Yes
+    Input Type: User input
+    Value Type: Plain
+    Description: Name of the package to be installed
+
+  Job
+    Job Category: SAPO - SSH Install Package
+    Provider Type: SSH
+    Overridable: Yes
+```
+
+```
+  Template
+    Name: SAPO - Ansible Install Package
+    Editor:
+
+      ---
+
+      - name: "UBUNTU PLAYBOOK INSTALL PACKAGE"
+        hosts: all
+        become: true
+        tasks:
+          - name: UBUNTU | Apt Update
+            ansible.builtin.shell: "apt update"
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'Ubuntu') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '20')
+
+          - name: UBUNTU | Install package {{ package }}
+            ansible.builtin.apt:
+              name: "{{ package }}"
+              state: latest
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'Ubuntu') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '20')
+
+          - name: UBUNTU | Check version installed
+            ansible.builtin.shell: "apt list --installed | grep {{ package }}"
+            register: packageversion
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'Ubuntu') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '20')
+
+            - name: UBUNTU | Show {{ package }} Version
+              debug:
+                msg: "{{ package }} Version is {{ packageversion.stdout }}"
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'Ubuntu') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '20')
+
+      - name: "RHEL PLAYBOOK INSTALL PACKAGE"
+        hosts: all
+        become: true
+        tasks:
+
+          - name: RHEL | Install package {{ package }}
+            ansible.builtin.yum:
+              name: "{{ package }}"
+              state: latest
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'RedHat') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '7.8')
+
+          - name: RHEL | Check version installed
+            ansible.builtin.shell: " rpm -qa {{ package }}"
+            register: packageversion
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'RedHat') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '7.8')
+
+            - name: RHEL | Show {{ package }} Version
+              debug:
+                msg: "{{ package }} Version is {{ packageversion.stdout }}"
+            when:
+            - (ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'RedHat') and (ansible_facts['distribution_major_version'] is defined and ansible_facts['distribution_major_version'] == '7.8')
+
+      ...
+
+  Inputs
+    Name: package
+    Required: Yes
+    Input Type: User input
+    Value Type: Plain
+    Description: Name of the package to be installed
+
+  Job
+    Job Category: SAPO - Ansible Install Package
+    Provider Type: Ansible
+    Overridable: Yes
+```
+
+```
+Hosts > Templates > Job Templates > "Run"
 ```
 
 **Import roles (CLI & FE)**
