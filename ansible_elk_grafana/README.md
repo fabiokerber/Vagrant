@@ -208,6 +208,8 @@ Hosts > Templates > Job Templates
 
 ```
 Hosts > Templates > Job Templates > "Run"
+Ubuntu package - inotify-tools
+CentOS package - wget
 ```
 
 **Import roles (CLI & FE)**
