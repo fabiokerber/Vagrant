@@ -287,6 +287,15 @@ $ ansible-playbook ~/hosts_setup.yml -u ansible --private-key ~/.ssh/id_rsa_fore
 $ ansible-playbook ~/hosts_setup.yml -u ansible -k -i ~/inventory (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
 ```
 
+**Install Package**
+```
+Select Action > Schedule Remote Job
+  Job category: Packages
+  Job template: Package Action - SSH Default
+  Action: install
+  Package: nginx
+```
+
 **Import roles (CLI & FE)**
 ```
 # git clone https://github.com/fabiokerber/Ansible.git /tmp/Ansible
@@ -298,7 +307,11 @@ Menu > Configure > Ansible Roles
 Foreman Command:
 # rm -rf /etc/ansible/roles/* && rm -rf /tmp/Ansible && git clone https://github.com/fabiokerber/Ansible.git /tmp/Ansible && cp -r /tmp/Ansible/Playbooks/install_package /etc/ansible/roles
 $ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k -i ~/inventory
-$ 
+```
+
+**API (FE)**
+```
+https://192.168.0.180/api/hosts
 ```
 
 **Hammer (user foreman-proxy)**
