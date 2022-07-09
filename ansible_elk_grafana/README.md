@@ -223,6 +223,7 @@ Menu > Configure > Ansible Roles
 
 Foreman Command:
 # rm -rf /etc/ansible/roles/* && rm -rf /tmp/Ansible && git clone https://github.com/fabiokerber/Ansible.git /tmp/Ansible && cp -r /tmp/Ansible/Playbooks/install_package /etc/ansible/roles
+# rm -rf /etc/ansible/roles/* && rm -rf /tmp/Ansible && git clone https://github.com/fabiokerber/Ansible.git /tmp/Ansible && cp -r /tmp/Ansible/Playbooks_foreman/remove_files /etc/ansible/roles
 $ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k -i ~/inventory
 ```
 

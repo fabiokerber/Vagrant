@@ -53,7 +53,7 @@ Vagrant.configure('2') do |config|
 #        foreman.vm.provision 'shell', inline: 'sudo dpkg-reconfigure locales'
 #        foreman.vm.provision 'shell', inline: 'init 6'
 #        foreman.vm.provision 'shell', inline: 'sudo foreman-installer --enable-foreman-plugin-{remote-execution,ansible,templates} --enable-foreman-proxy-plugin-{remote-execution-ssh,ansible}'
-#        foreman.vm.provision 'shell', inline: 'chown foreman-proxy.root foreman-proxy'
+#        foreman.vm.provision 'shell', inline: 'chown foreman-proxy.root /usr/share/foreman-proxy/'
 
         foreman.vm.provider 'virtualbox' do |vb|
             vb.memory = 8192
