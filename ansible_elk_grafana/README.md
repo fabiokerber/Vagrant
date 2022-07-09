@@ -1,6 +1,6 @@
 # FOREMAN
 
-**Links Foreman**
+**Links Foreman**<br>
 https://www.youtube.com/watch?v=PQYCiJlnpHM<br>
 https://www.youtube.com/watch?v=jC0c3kv2ofA<br>
 https://theforeman.org/manuals/3.3/index.html<br>
@@ -12,9 +12,14 @@ https://theforeman.org/plugins/foreman_ansible/3.x/index.html#2.Installation<br>
 https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/<br>
 https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html<br>
 https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html#Synchronizing_Templates_Repositories_managing-hosts<br>
+https://apidocs.theforeman.org/foreman/3.3/apidoc/v2.html<br>
 
-**Links Ansible**
+**Links Ansible**<br>
 https://docs.ansible.com/ansible/latest/user_guide/playbooks_blocks.html<br>
+https://theforeman.github.io/foreman-ansible-modules/v0.3.0/modules/foreman_job_template_module.html<br>
+https://docs.ansible.com/ansible/5/collections/theforeman/foreman/job_template_module.html<br>
+https://galaxy.ansible.com/theforeman/foreman?extIdCarryOver=true&sc_cid=701f2000001OH7YAAW<br>
+https://theforeman.github.io/foreman-ansible-modules/v2.1.2/README.html#common-role-variables<br>
 
 **Log Foreman**
 ```
@@ -232,7 +237,17 @@ $ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k
 https://192.168.0.180/api/
 ```
 <kbd>
-    <img src="https://github.com/fabiokerber/lab/blob/main/images/150120221612.jpg">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221423.png">
+</kbd>
+<br />
+<br />
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221424.png">
+</kbd>
+<br />
+<br />
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221425.png">
 </kbd>
 <br />
 <br />
