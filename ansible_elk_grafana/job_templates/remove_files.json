@@ -1,0 +1,33 @@
+{
+    "description": "",
+    "description_format": "",
+    "template": "---\n\n- name: PLAYBOOK REMOVE FILES\n  hosts: all\n  become: true\n  tasks:\n\n  - name: REMOVE FILES\n    block:\n\n      - name: REMOVE FILES | Create folder\n        ansible.builtin.file:\n          path: \"{{ item }}\"\n          state: directory\n          mode: '0755'\n        with_items:\n          - /tmp/files\n\n      - name: REMOVE FILES | Create files\n        ansible.builtin.file: \n          path: /tmp/files/\"{{ item }}\"\n          state: touch\n          mode: 0775\n        with_items:\n          - file0.log\n          - file1.log\n          - file2.log\n          - file3.log\n          - file4.log\n\n      - name: REMOVE FILES | Create old files\n        ansible.builtin.file: \n          path: /tmp/files/\"{{ item }}\"\n          state: touch\n          mode: 0775\n          modification_time: \"202107081234.56\"\n        with_items:\n          - file5.log\n          - file6.log\n          - file7.log\n          - file8.log\n          - file9.log\n\n      - name: REMOVE FILES | Remove old files\n        ansible.builtin.shell: \"find /tmp/files/* -mtime +30 -exec rm -rfv '{}' +\"\n        register: filesremoved\n\n      - name: REMOVE FILES | Show Files Removed\n        debug:\n          msg: \"{{ filesremoved.stdout_lines }}\"\n\n    always:\n\n      - name: LOGBOOK REMOVE FILES\n        lineinfile:\n          path: /var/log/exec_ansible.log\n          line: \"{{ lookup('pipe','TZ=\\\"Europe/Lisbon\\\" date +%d/%m/%Y-%H:%M:%S') }} - Exec PLAYBOOK REMOVE FILES\"\n          create: yes",
+    "locked": false,
+    "id": "",
+    "name": "SAPO - Ansible Remove Files",
+    "job_category": "SAPO - Ansible",
+    "provider_type": "Ansible",
+    "snippet": false,
+    "template_inputs": [],
+    "effective_user": {
+        "value": "",
+        "current_user": false,
+        "overridable": false
+    },
+    "locations": [
+        {
+            "id": 2,
+            "name": "Default Location",
+            "title": "Default Location",
+            "description": null
+        }
+    ],
+    "organizations": [
+        {
+            "id": 1,
+            "name": "Default Organization",
+            "title": "Default Organization",
+            "description": null
+        }
+    ]
+}

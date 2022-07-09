@@ -229,8 +229,13 @@ $ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k
 
 **API (FE)**
 ```
-https://192.168.0.180/api/hosts
+https://192.168.0.180/api/
 ```
+<kbd>
+    <img src="https://github.com/fabiokerber/lab/blob/main/images/150120221612.jpg">
+</kbd>
+<br />
+<br />
 
 **Hammer (user foreman-proxy)**
 ```

@@ -1,0 +1,36 @@
+{
+    "description": "",
+    "description_format": "",
+    "created_at": "2022-07-07T14:45:41.925Z",
+    "updated_at": "2022-07-08T13:02:47.316Z",
+    "template": "---\n\n- name: PLAYBOOK INSTALL PACKAGE\n  hosts: all\n  become: true\n  ignore_errors: yes\n  tasks:\n  - name: UBUNTU INSTALL PACKAGE\n    block:\n\n      - name: UBUNTU | Apt Update\n        ansible.builtin.shell: \"apt update\"\n\n      - name: UBUNTU | Install package {{ package }}\n        ansible.builtin.apt:\n          name: \"{{ package }}\"\n          state: latest\n\n      - name: UBUNTU | Check version installed\n        ansible.builtin.shell: \"apt list --installed | grep {{ package }}\"\n        register: packageversion\n\n      - name: UBUNTU | Show {{ package }} Version\n        debug:\n          msg: \"{{ package }} Version is {{ packageversion.stdout }}\"\n\n    when:\n      - ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'Ubuntu'\n      - ansible_facts['distribution_major_version'] == '20'\n\n  - name: RHEL INSTALL PACKAGE\n    block:\n\n      - name: RHEL | Install package {{ package }}\n        ansible.builtin.yum:\n          name: \"{{ package }}\"\n          state: latest\n\n      - name: RHEL | Check version installed\n        ansible.builtin.shell: \"rpm -qa {{ package }}\"\n        register: packageversion\n\n      - name: RHEL | Show {{ package }} Version\n        debug:\n          msg: \"{{ package }} Version is {{ packageversion.stdout }}\"\n\n    when:\n      - ansible_facts['distribution'] is defined and ansible_facts['distribution'] == 'RedHat'\n      - ansible_facts['distribution_major_version'] == '7.8'\n\n...",
+    "locked": false,
+    "id": "",
+    "name": "SAPO - Ansible Install Package",
+    "job_category": "SAPO - Ansible",
+    "provider_type": "Ansible",
+    "snippet": false,
+    "template_inputs": [],
+    "_comment": "# Criar Input > Name: package | Required: yes | Input Type: User input | Value Type: Plain #",
+    "effective_user": {
+        "value": "",
+        "current_user": false,
+        "overridable": true
+    },
+    "locations": [
+        {
+            "id": 2,
+            "name": "Default Location",
+            "title": "Default Location",
+            "description": null
+        }
+    ],
+    "organizations": [
+        {
+            "id": 1,
+            "name": "Default Organization",
+            "title": "Default Organization",
+            "description": null
+        }
+    ]
+}
