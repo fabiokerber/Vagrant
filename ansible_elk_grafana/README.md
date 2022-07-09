@@ -118,7 +118,7 @@ Select Action > Schedule Remote Job
   Package: nginx
 ```
 
-**Job Templates**
+**Job Templates**<br>
 https://www.youtube.com/watch?v=jC0c3kv2ofA<br>
 ```
 Hosts > Templates > Job Templates
