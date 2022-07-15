@@ -21,6 +21,9 @@ https://docs.ansible.com/ansible/5/collections/theforeman/foreman/job_template_m
 https://galaxy.ansible.com/theforeman/foreman?extIdCarryOver=true&sc_cid=701f2000001OH7YAAW<br>
 https://theforeman.github.io/foreman-ansible-modules/v2.1.2/README.html#common-role-variables<br>
 
+**Link Curl**<br>
+https://reqbin.com/curl
+
 **Log Foreman**
 ```
 > /var/log/foreman/production.log
