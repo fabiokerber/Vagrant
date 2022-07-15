@@ -39,21 +39,35 @@ https://theforeman.github.io/foreman-ansible-modules/v2.1.2/README.html#common-r
 
 **Settings (FE)**
 ```
+Settings > General > New host details UI
+"Foreman will load the new UI for host details"
+> No
+
 Settings > Authentication > Trusted hosts
 "List of hostnames, IPv4, IPv6 addresses or subnets to be trusted in addition to Smart Proxies for access to fact/report importers and ENC output"
 e.g.: mgm-puppetmaster01.manager, mgm-puppetmaster02.manager, mgm-puppetmaster03.manager
 
 Settings > Facts > Create new host when facts are uploaded
 "Foreman will create the host when new facts are received"
-> "No"
+> No
 
 Settings > Remote Execution > SSH User
-"Default user to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_user (e.g.: host parameters)."
+"Default user to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_user."
+(e.g.: host parameters)
 > ansible
 
 Settings > Remote Execution > Default SSH password
-"Default password to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_password (e.g.: host parameters)."
+"Default password to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_password." 
+(e.g.: host parameters)
 > <ansible_user_password>
+
+Settings > Remote Execution > Default SSH key passphrase
+"Default key passphrase to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_key_passphrase."
+(e.g.: host parameters)
+> <key.pub_password>
+
+Settings > Remote Execution > Connect by IP
+"Should the ip addresses on host interfaces be preferred over the fqdn? It is useful when DNS not resolving the fqdns properly. You may override this per host by setting a parameter called remote_execution_connect_by_ip. For dual-stacked hosts you should consider the remote_execution_connect_by_ip_prefer_ipv6 setting"
 ```
 
 **Remote Execution SSH Another User (FE)**
@@ -69,7 +83,7 @@ https://community.theforeman.org/t/remote-execution-ssh-user/6091
 **Create Ansible User (srv01, srv02)**
 ```
 $ sudo useradd -r -m ansible
-$ tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (generate password)
+$ tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (ansible password)
 $ sudo passwd ansible
 
 $ sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
@@ -112,7 +126,7 @@ $ ansible-playbook ~/hosts_setup.yml -u ansible -k -i ~/inventory (Solicita senh
 
 **Install Package**
 ```
-Select Action > Schedule Remote Job
+All Hosts > Select Action > Schedule Remote Job
   Job category: Packages
   Job template: Package Action - SSH Default
   Action: install
@@ -233,9 +247,11 @@ Foreman Command:
 $ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k -i ~/inventory
 ```
 
-**API (FE)**
+**API**
 ```
 https://192.168.0.180/api/
+https://192.168.0.180/api/hosts
+https://192.168.0.180/api/job_templates
 ```
 <kbd>
     <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221423.png">
@@ -252,6 +268,33 @@ https://192.168.0.180/api/
 </kbd>
 <br />
 <br />
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221641.png">
+</kbd>
+<br />
+<br />
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221642.png">
+</kbd>
+<br />
+<br />
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221643.png">
+</kbd>
+<br />
+<br />
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221644.png">
+</kbd>
+<br />
+<br />
+```
+GET
+curl --insecure -X GET https://192.168.0.180/api/hosts -H 'Content-Type: application/json' --user admin:ssiFUPrgjctKS8V3
+
+POST
+curl --insecure -X POST https://192.168.0.180/api/job_templates -H 'Content-Type: application/json' --user admin:ssiFUPrgjctKS8V3 -d @/home/fabio/git-pessoal/Vagrant/ansible_elk_grafana/job_templates/remove_files.json
+```
 
 **Hammer (user foreman-proxy)**
 ```
