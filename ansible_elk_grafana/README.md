@@ -93,7 +93,7 @@ $ sudo bash -c 'echo "AllowUsers fabio" >> /etc/ssh/sshd_config'
 $ sudo bash -c 'echo "AllowUsers vagrant" >> /etc/ssh/sshd_config'
 $ sudo systemctl restart sshd
 
-$ sudo update-alternatives --config editor (Ubuntu Server somente)
+$ sudo update-alternatives --config editor (Ubuntu Server only)
 $ sudo bash -c 'visudo'
   ansible ALL=(ALL) NOPASSWD:ALL
 ```
@@ -288,6 +288,8 @@ https://192.168.0.180/api/job_templates
 </kbd>
 <br />
 <br />
+
+
 ```
 GET
 curl --insecure -X GET https://192.168.0.180/api/hosts -H 'Content-Type: application/json' --user admin:ssiFUPrgjctKS8V3
