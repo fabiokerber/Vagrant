@@ -76,6 +76,7 @@ $ sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ss
 $ sudo bash -c 'echo "AllowUsers root" >> /etc/ssh/sshd_config'
 $ sudo bash -c 'echo "AllowUsers ansible" >> /etc/ssh/sshd_config'
 $ sudo bash -c 'echo "AllowUsers fabio" >> /etc/ssh/sshd_config'
+$ sudo bash -c 'echo "AllowUsers vagrant" >> /etc/ssh/sshd_config'
 $ sudo systemctl restart sshd
 
 $ sudo update-alternatives --config editor (Ubuntu Server somente)
