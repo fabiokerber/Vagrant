@@ -113,7 +113,7 @@ $ sudo bash -c 'visudo'
 
 Generate keygen
 $ ssh-keygen -t rsa
-$ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub foreman@srv01.aut.lab
+$ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@foreman.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv01.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv02.aut.lab
 
