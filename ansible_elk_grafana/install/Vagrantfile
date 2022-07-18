@@ -128,7 +128,7 @@ Vagrant.configure('2') do |config|
 
     config.vm.define 'srv02' do |srv02|
 
-        srv02.vm.box = 'centos/7'
+        srv02.vm.box = 'rockylinux/8'
         srv02.vm.hostname = 'srv02.aut.lab'
         srv02.vm.network 'public_network', ip: ENV['SRV02_IP'], bridge: ENV['INTERFACE']
 

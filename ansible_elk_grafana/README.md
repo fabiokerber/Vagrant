@@ -24,6 +24,12 @@ https://theforeman.github.io/foreman-ansible-modules/v2.1.2/README.html#common-r
 **Link Curl**<br>
 https://reqbin.com/curl
 
+**Vagrant Plugins**<br>
+```
+$ vagrant plugin install {vagrant-vboxmanage,vagrant-vbguest,vagrant-disksize,vagrant-env,vagrant-reload}
+Reload srv01.vm.provision :reload
+```
+
 **Log Foreman**
 ```
 > /var/log/foreman/production.log
@@ -83,7 +89,7 @@ remote_execution_ssh_password | string | <ansible_user_password> (Somente quando
 https://community.theforeman.org/t/remote-execution-ssh-user/6091
 ```
 
-**Create Ansible User (srv01, srv02)**
+**Create Ansible User (foreman, srv01, srv02)**
 ```
 $ sudo useradd -r -m ansible
 $ tr -cd '[:alnum:]' < /dev/urandom | fold -w10 | head -n1 (ansible password)
@@ -96,7 +102,7 @@ $ sudo bash -c 'echo "AllowUsers fabio" >> /etc/ssh/sshd_config'
 $ sudo bash -c 'echo "AllowUsers vagrant" >> /etc/ssh/sshd_config'
 $ sudo systemctl restart sshd
 
-$ sudo update-alternatives --config editor (Ubuntu Server only)
+$ sudo update-alternatives --config editor (Debian/Ubuntu Server only)
 $ sudo bash -c 'visudo'
   ansible ALL=(ALL) NOPASSWD:ALL
 ```
@@ -107,6 +113,7 @@ $ sudo bash -c 'visudo'
 
 Generate keygen
 $ ssh-keygen -t rsa
+$ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub foreman@srv01.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv01.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv02.aut.lab
 
@@ -291,7 +298,11 @@ https://192.168.0.180/api/job_templates
 </kbd>
 <br />
 <br />
-
+<kbd>
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/180720221039.png">
+</kbd>
+<br />
+<br />
 
 ```
 GET
@@ -322,6 +333,12 @@ $ hammer architecture list
 ```
 https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html
 https://cockpit-project.org/running.html
+```
+
+**Foreman Console**
+```
+$ sudo bash -c 'foreman-rake console'
+  Host.find_by_name("srv01.aut.lab").destroy
 ```
 
 |**Port**|**Protocol**|**Required For**|
