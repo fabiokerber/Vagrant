@@ -27,7 +27,6 @@ https://reqbin.com/curl
 **Vagrant Plugins**<br>
 ```
 $ vagrant plugin install {vagrant-vboxmanage,vagrant-vbguest,vagrant-disksize,vagrant-env,vagrant-reload}
-Reload srv01.vm.provision :reload
 ```
 
 **Log Foreman**
@@ -44,6 +43,7 @@ Reload srv01.vm.provision :reload
 > /etc/ansible/ansible.cfg
 > /etc/foreman-proxy/ansible.cfg
 > /usr/share/foreman-proxy/.ansible.cfg
+> /etc/foreman/settings.yaml
 ```
 
 **Settings (FE)**
@@ -58,7 +58,7 @@ e.g.: mgm-puppetmaster01.manager, mgm-puppetmaster02.manager, mgm-puppetmaster03
 
 Settings > Facts > Create new host when facts are uploaded
 "Foreman will create the host when new facts are received"
-> No
+> Yes
 
 Settings > Remote Execution > SSH User
 "Default user to use for SSH. You may override per host by setting a parameter called remote_execution_ssh_user."
@@ -107,7 +107,7 @@ $ sudo bash -c 'visudo'
   ansible ALL=(ALL) NOPASSWD:ALL
 ```
 
-**Import hosts to the Foreman (user foreman-proxy)**
+**Send key.pub to target hosts**
 ```
 # sudo -u foreman-proxy -s /bin/bash
 
@@ -116,7 +116,10 @@ $ ssh-keygen -t rsa
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@foreman.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv01.aut.lab
 $ ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub ansible@srv02.aut.lab
+```
 
+**First inventory (user foreman-proxy)**
+```
 $ vim ~/inventory
 srv01 ansible_host=192.168.0.190
 srv02 ansible_host=192.168.0.191
@@ -133,6 +136,11 @@ $ vim ~/hosts_setup.yml
 $ ansible-playbook ~/hosts_setup.yml -u ansible --private-key ~/.ssh/id_rsa_foreman_proxy -i ~/inventory
 $ ansible-playbook ~/hosts_setup.yml -u ansible -k -i ~/inventory (Solicita senha do usuario ansible para casos que não enviou a key ao destino)
 ```
+
+**Create group**
+```
+Configure > Host Groups
+
 
 **Install Package**
 ```
