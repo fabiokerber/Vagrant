@@ -13,6 +13,10 @@ https://www.linuxtechi.com/install-configure-foreman-1-16-debian-9-ubuntu-16-04/
 https://www.itzgeek.com/how-tos/linux/centos-how-tos/install-foreman-on-centos-7-rhel-7-ubuntu-14-04-3.html<br>
 https://docs.theforeman.org/nightly/Managing_Hosts/index-foreman-el.html#Synchronizing_Templates_Repositories_managing-hosts<br>
 https://apidocs.theforeman.org/foreman/3.3/apidoc/v2.html<br>
+https://projects.theforeman.org/projects/foreman/wiki/List_of_Plugins<br>
+https://www.theforeman.org/manuals/3.3/index.html#5.1.9UsingOAuth<br>
+https://www.theforeman.org/manuals/3.3/index.html#3.2.2InstallerOptions<br>
+https://app.swaggerhub.com/apis/foremanmining/foreman-api/2.0.0<br>
 
 **Links Ansible**<br>
 https://docs.ansible.com/ansible/latest/user_guide/playbooks_blocks.html<br>
@@ -43,7 +47,7 @@ $ vagrant plugin install {vagrant-vboxmanage,vagrant-vbguest,vagrant-disksize,va
 > /etc/ansible/ansible.cfg
 > /etc/foreman-proxy/ansible.cfg
 > /usr/share/foreman-proxy/.ansible.cfg
-> /etc/foreman/settings.yaml
+> /etc/foreman/settings.yaml (OAuth)
 ```
 
 **Settings (FE)**
@@ -58,6 +62,10 @@ e.g.: mgm-puppetmaster01.manager, mgm-puppetmaster02.manager, mgm-puppetmaster03
 
 Settings > Facts > Create new host when facts are uploaded
 "Foreman will create the host when new facts are received"
+> Yes
+
+Settings > Config Management > Create new host when report is uploaded
+"Foreman will create the host when a report is received"
 > Yes
 
 Settings > Remote Execution > SSH User
@@ -139,8 +147,8 @@ $ ansible-playbook ~/hosts_setup.yml -u ansible -k -i ~/inventory (Solicita senh
 
 **Create group**
 ```
-Configure > Host Groups
-
+Configure > Host Groups > Create Host Group > Linux
+```
 
 **Install Package**
 ```
@@ -267,6 +275,7 @@ $ ansible-playbook /etc/ansible/roles/install_package/playbook.yml -u ansible -k
 
 **API**
 ```
+https://192.168.0.180/apidoc
 https://192.168.0.180/api/
 https://192.168.0.180/api/hosts
 https://192.168.0.180/api/job_templates
@@ -318,6 +327,8 @@ curl --insecure -X GET https://192.168.0.180/api/hosts -H 'Content-Type: applica
 
 POST
 curl --insecure -X POST https://192.168.0.180/api/job_templates -H 'Content-Type: application/json' --user admin:ssiFUPrgjctKS8V3 -d @/home/fabio/git-pessoal/Vagrant/ansible_elk_grafana/job_templates/remove_files.json
+
+
 ```
 
 **Hammer (user foreman-proxy)**
