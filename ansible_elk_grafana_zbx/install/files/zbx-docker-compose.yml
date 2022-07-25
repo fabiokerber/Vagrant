@@ -16,7 +16,7 @@ services:
 
   zabbix-java-gateway:
     profiles: [zabbix]
-    image: zabbix/zabbix-java-gateway:alpine-${TAG}-latest
+    image: zabbix/zabbix-java-gateway:alpine-${ZBX_TAG}-latest
     restart: unless-stopped
     container_name: zabbix-java-gateway
     networks:
@@ -29,7 +29,7 @@ services:
     build:
       dockerfile: ./zbx-dockerfile/zabbix-server-mysql.dockerfile
       context: .
-    image: zabbix/zabbix-server-mysql:alpine-${TAG}-latest
+    image: zabbix/zabbix-server-mysql:alpine-${ZBX_TAG}-latest
     restart: unless-stopped
     container_name: zabbix-server-mysql
     ports:
@@ -44,7 +44,7 @@ services:
     build:
       dockerfile: ./zbx-dockerfile/zabbix-web-nginx-mysql.dockerfile
       context: .
-    image: zabbix/zabbix-web-nginx-mysql:alpine-${TAG}-latest
+    image: zabbix/zabbix-web-nginx-mysql:alpine-${ZBX_TAG}-latest
     restart: unless-stopped
     container_name: zabbix-web-nginx-mysql
     ports:

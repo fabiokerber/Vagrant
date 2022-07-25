@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_TAG}
     container_name: elasticsearch
     restart: always
     environment:
@@ -26,7 +26,7 @@ services:
 
   kibana:
     container_name: kibana
-    image: docker.elastic.co/kibana/kibana:7.12.0
+    image: docker.elastic.co/kibana/kibana:${ELK_TAG}
     restart: always
     environment:
       SERVER_NAME: kibana

@@ -373,3 +373,40 @@ $ sudo bash -c 'foreman-rake console'
 |`8443`| TCP | Smart Proxy, open only to Foreman |
 
 *Ports indicated with * are running by default on a Foreman all-in-one installation and should be open.*<br>
+
+# GRAFANA & ELK
+
+**Links Grafana**<br>
+https://phoenixnap.com/kb/elk-stack-docker<br>
+https://medium.com/analytics-vidhya/installing-elk-stack-in-docker-828df335e421<br>
+
+```
+> .env
+  LOG_IP=
+  ZBX_TAG=
+  ELK_TAG=
+
+> vagrant up grafana_elk
+
+> http://LOG_IP:3000
+  admin
+  admin
+
+> http://LOG_IP:5601
+
+> http://LOG_IP:9200
+
+```
+
+# ZABBIX
+```
+> .env
+  ZABBIX_IP=
+  TAG=
+
+> vagrant up zabbix
+
+> http://ZABBIX_IP:8080
+  Admin
+  zabbix
+```

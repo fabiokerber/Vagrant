@@ -40,7 +40,7 @@ Vagrant.configure('2') do |config|
         foreman.vm.provision 'shell', inline: 'pip3.9 install setuptools_rust wheel && pip3.9 install ansible'
         foreman.vm.provision 'shell', inline: 'pip3.9 install psutil'
         foreman.vm.provision 'shell', inline: 'pip3.9 install ansible-tower-cli'
-        
+
         foreman.vm.provision 'shell', inline: 'sudo mkdir -p /etc/ansible/roles'
         foreman.vm.provision 'shell', inline: 'sudo touch {/var/log/ansible.log,/etc/ansible/hosts}'
         foreman.vm.provision 'shell', inline: 'sudo chmod 777 /var/log/ansible.log'
@@ -76,7 +76,7 @@ Vagrant.configure('2') do |config|
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP zbx.aut.lab zbx" >> /etc/hosts', env: {"IP" => ENV['ZABBIX_IP']}
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
-        grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
+        grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
 
         grafana_elk.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
         grafana_elk.vm.provision 'shell', inline: 'sudo sysctl -w vm.max_map_count=262144'
@@ -133,7 +133,6 @@ Vagrant.configure('2') do |config|
 
         zabbix.vm.provision 'shell', inline: 'mkdir -p /home/vagrant/volumes/zabbix'
         zabbix.vm.provision 'shell', inline: 'sudo chown vagrant. -R /home/vagrant/volumes'
-        zabbix.vm.provision 'shell', inline: 'cd /vagrant/files && sudo docker compose build'
         zabbix.vm.provision 'shell', inline: 'docker compose -f /vagrant/files/zbx-docker-compose.yml --profile zabbix up -d'
 
         zabbix.vm.provider 'virtualbox' do |vb|
