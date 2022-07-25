@@ -19,6 +19,7 @@ Vagrant.configure('2') do |config|
         foreman.vm.provision 'shell', inline: 'sudo sed -i "/127.0.1.1/d" /etc/hosts'
         foreman.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         foreman.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
+        foreman.vm.provision 'shell', inline: 'echo "$IP zbx.aut.lab zbx" >> /etc/hosts', env: {"IP" => ENV['ZABBIX_IP']}
         foreman.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
         foreman.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
 
@@ -73,25 +74,30 @@ Vagrant.configure('2') do |config|
         grafana_elk.vm.network 'public_network', ip: ENV['LOG_IP'], bridge: ENV['INTERFACE']
 
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
+        grafana_elk.vm.provision 'shell', inline: 'echo "$IP zbx.aut.lab zbx" >> /etc/hosts', env: {"IP" => ENV['ZABBIX_IP']}
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
         grafana_elk.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
 
         grafana_elk.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
+        grafana_elk.vm.provision 'shell', inline: 'sudo sysctl -w vm.max_map_count=262144'
         grafana_elk.vm.provision 'shell', inline: 'sudo apt update'
 
         grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y vim git'
-        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common acl'
-        grafana_elk.vm.provision 'shell', inline: 'curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -'
-        grafana_elk.vm.provision 'shell', inline: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"'
+        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y ca-certificates curl gnupg2 software-properties-common acl'
+        grafana_elk.vm.provision 'shell', inline: 'sudo mkdir -p /etc/apt/keyrings'
+        grafana_elk.vm.provision 'shell', inline: 'curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg'
+        grafana_elk.vm.provision 'shell', inline: 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null'
         grafana_elk.vm.provision 'shell', inline: 'sudo apt update'
-        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y docker-ce docker-compose-plugin'
+        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin'
         grafana_elk.vm.provision 'shell', inline: 'sudo systemctl restart docker'
-
         grafana_elk.vm.provision 'shell', inline: 'sudo setfacl -m user:vagrant:rw /var/run/docker.sock'
         grafana_elk.vm.provision 'shell', inline: 'sudo usermod -aG docker vagrant'
+
         grafana_elk.vm.provision 'shell', inline: 'mkdir -p /home/vagrant/volumes/{grafana,elk}'
+        grafana_elk.vm.provision 'shell', inline: 'sudo chown vagrant. -R /home/vagrant/volumes'
         grafana_elk.vm.provision 'shell', inline: 'docker network create grafana-net'
         grafana_elk.vm.provision 'shell', inline: 'docker run -d --user 1000 -v /home/vagrant/volumes/grafana/:/var/lib/grafana -p 3000:3000 --restart always --name=grafana --network=grafana-net grafana/grafana'
+        grafana_elk.vm.provision 'shell', inline: 'docker compose -f /vagrant/files/elk-docker-compose.yml up -d'
 
         grafana_elk.vm.provider 'virtualbox' do |vb|
             vb.memory = 4096
@@ -103,29 +109,37 @@ Vagrant.configure('2') do |config|
 
     end
 
-    config.vm.define 'zabbix_srv' do |zabbix_srv|
+    config.vm.define 'zabbix' do |zabbix|
 
-        zabbix_srv.vm.box = 'ubuntu/focal64'
-        zabbix_srv.vm.hostname = 'zabbix-srv'
-        zabbix_srv.vm.network 'public_network', ip: ENV['ZABBIX_IP'], bridge: ENV['INTERFACE_LAN']
-        zabbix_srv.vm.network 'forwarded_port', guest: 8080, host: 8080
-        zabbix_srv.vm.network 'forwarded_port', guest: 10051, host:10051
+        zabbix.vm.box = 'debian/bullseye64'
+        zabbix.vm.hostname = 'zbx.aut.lab'
+        zabbix.vm.network 'public_network', ip: ENV['ZABBIX_IP'], bridge: ENV['INTERFACE']
 
-        zabbix_srv.vm.provision 'shell', inline: 'sudo apt-get update'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo apt-get update'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo apt-get install docker-ce -y'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo chmod +x /usr/local/bin/docker-compose'
-        zabbix_srv.vm.provision 'shell', inline: 'cd /vagrant && sudo docker-compose build'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo mkdir -p /home/vagrant/zabbixdb'
-        zabbix_srv.vm.provision 'shell', inline: 'sudo docker-compose -f /vagrant/docker-compose.yml --profile zabbix up -d'
+        zabbix.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
+        zabbix.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
+        zabbix.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
+        zabbix.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
 
-        zabbix_srv.vm.provider 'virtualbox' do |vb|
+        zabbix.vm.provision 'shell', inline: 'sudo apt install -y vim git'
+        zabbix.vm.provision 'shell', inline: 'sudo apt install -y ca-certificates curl gnupg2 software-properties-common acl'
+        zabbix.vm.provision 'shell', inline: 'sudo mkdir -p /etc/apt/keyrings'
+        zabbix.vm.provision 'shell', inline: 'curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg'
+        zabbix.vm.provision 'shell', inline: 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null'
+        zabbix.vm.provision 'shell', inline: 'sudo apt update'
+        zabbix.vm.provision 'shell', inline: 'sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin'
+        zabbix.vm.provision 'shell', inline: 'sudo systemctl restart docker'
+        zabbix.vm.provision 'shell', inline: 'sudo setfacl -m user:vagrant:rw /var/run/docker.sock'
+        zabbix.vm.provision 'shell', inline: 'sudo usermod -aG docker vagrant'
+
+        zabbix.vm.provision 'shell', inline: 'mkdir -p /home/vagrant/volumes/zabbix'
+        zabbix.vm.provision 'shell', inline: 'sudo chown vagrant. -R /home/vagrant/volumes'
+        zabbix.vm.provision 'shell', inline: 'cd /vagrant/files && sudo docker compose build'
+        zabbix.vm.provision 'shell', inline: 'docker compose -f /vagrant/files/zbx-docker-compose.yml --profile zabbix up -d'
+
+        zabbix.vm.provider 'virtualbox' do |vb|
             vb.memory = 4096
             vb.cpus = 4
-            vb.name = 'zabbix-srv'
+            vb.name = 'zbx.aut.lab'
             vb.customize ['modifyvm', :id, '--nicpromisc2', 'allow-all']
 
         end
@@ -140,6 +154,7 @@ Vagrant.configure('2') do |config|
 
         srv01.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         srv01.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
+        srv01.vm.provision 'shell', inline: 'echo "$IP zbx.aut.lab zbx" >> /etc/hosts', env: {"IP" => ENV['ZABBIX_IP']}
         srv01.vm.provision 'shell', inline: 'echo "$IP srv02.aut.lab srv02" >> /etc/hosts', env: {"IP" => ENV['SRV02_IP']}
 
         srv01.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
@@ -165,6 +180,7 @@ Vagrant.configure('2') do |config|
 
         srv02.vm.provision 'shell', inline: 'echo "$IP foreman.aut.lab foreman" >> /etc/hosts', env: {"IP" => ENV['FOREMAN_IP']}
         srv02.vm.provision 'shell', inline: 'echo "$IP log.aut.lab log" >> /etc/hosts', env: {"IP" => ENV['LOG_IP']}
+        srv02.vm.provision 'shell', inline: 'echo "$IP zbx.aut.lab zbx" >> /etc/hosts', env: {"IP" => ENV['ZABBIX_IP']}
         srv02.vm.provision 'shell', inline: 'echo "$IP srv01.aut.lab srv01" >> /etc/hosts', env: {"IP" => ENV['SRV01_IP']}
 
         srv02.vm.provision 'shell', inline: 'sudo timedatectl set-timezone America/Sao_Paulo'
