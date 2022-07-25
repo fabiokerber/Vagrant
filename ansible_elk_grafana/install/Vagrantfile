@@ -80,24 +80,52 @@ Vagrant.configure('2') do |config|
         grafana_elk.vm.provision 'shell', inline: 'sudo apt update'
 
         grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y vim git'
-        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common'
+        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common acl'
         grafana_elk.vm.provision 'shell', inline: 'curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -'
         grafana_elk.vm.provision 'shell', inline: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"'
         grafana_elk.vm.provision 'shell', inline: 'sudo apt update'
-        grafana_elk.vm.provision 'shell', inline: 'sudo apt install docker-ce'
+        grafana_elk.vm.provision 'shell', inline: 'sudo apt install -y docker-ce docker-compose-plugin'
+        grafana_elk.vm.provision 'shell', inline: 'sudo systemctl restart docker'
 
-        grafana_elk.vm.provision 'shell', inline: 'sudo mkdir -p /home/vagrant/volumes/grafana'
-        grafana_elk.vm.provision 'shell', inline: 'sudo docker network create grafana-net'
-        grafana_elk.vm.provision 'shell', inline: 'sudo docker run -d --user 1000 -v /home/vagrant/volumes/grafana/:/var/lib/grafana -p 3000:3000 --restart always --name=grafana --network=grafana-net grafana/grafana'
-
-####################################
-# INSTALAR/CONFIGURAR ELK
-####################################
+        grafana_elk.vm.provision 'shell', inline: 'sudo setfacl -m user:vagrant:rw /var/run/docker.sock'
+        grafana_elk.vm.provision 'shell', inline: 'sudo usermod -aG docker vagrant'
+        grafana_elk.vm.provision 'shell', inline: 'mkdir -p /home/vagrant/volumes/{grafana,elk}'
+        grafana_elk.vm.provision 'shell', inline: 'docker network create grafana-net'
+        grafana_elk.vm.provision 'shell', inline: 'docker run -d --user 1000 -v /home/vagrant/volumes/grafana/:/var/lib/grafana -p 3000:3000 --restart always --name=grafana --network=grafana-net grafana/grafana'
 
         grafana_elk.vm.provider 'virtualbox' do |vb|
             vb.memory = 4096
             vb.cpus = 4
             vb.name = 'log.aut.lab'
+            vb.customize ['modifyvm', :id, '--nicpromisc2', 'allow-all']
+
+        end
+
+    end
+
+    config.vm.define 'zabbix_srv' do |zabbix_srv|
+
+        zabbix_srv.vm.box = 'ubuntu/focal64'
+        zabbix_srv.vm.hostname = 'zabbix-srv'
+        zabbix_srv.vm.network 'public_network', ip: ENV['ZABBIX_IP'], bridge: ENV['INTERFACE_LAN']
+        zabbix_srv.vm.network 'forwarded_port', guest: 8080, host: 8080
+        zabbix_srv.vm.network 'forwarded_port', guest: 10051, host:10051
+
+        zabbix_srv.vm.provision 'shell', inline: 'sudo apt-get update'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo apt-get update'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo apt-get install docker-ce -y'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo chmod +x /usr/local/bin/docker-compose'
+        zabbix_srv.vm.provision 'shell', inline: 'cd /vagrant && sudo docker-compose build'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo mkdir -p /home/vagrant/zabbixdb'
+        zabbix_srv.vm.provision 'shell', inline: 'sudo docker-compose -f /vagrant/docker-compose.yml --profile zabbix up -d'
+
+        zabbix_srv.vm.provider 'virtualbox' do |vb|
+            vb.memory = 4096
+            vb.cpus = 4
+            vb.name = 'zabbix-srv'
             vb.customize ['modifyvm', :id, '--nicpromisc2', 'allow-all']
 
         end
