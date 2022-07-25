@@ -381,6 +381,9 @@ https://phoenixnap.com/kb/elk-stack-docker<br>
 https://medium.com/analytics-vidhya/installing-elk-stack-in-docker-828df335e421<br>
 
 ```
+> Vagrantfile
+  grafana_elk.vm.provision 'shell', inline: 'dockerd --max-concurrent-downloads 2 &>/dev/null' ("Weak Network")
+
 > .env
   LOG_IP=
   ZBX_TAG=
