@@ -281,42 +281,42 @@ https://192.168.0.180/api/hosts
 https://192.168.0.180/api/job_templates
 ```
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221423.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/090720221423.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221424.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/090720221424.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/090720221425.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/090720221425.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221641.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/150720221641.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221642.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/150720221642.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221643.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/150720221643.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/150720221644.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/150720221644.png">
 </kbd>
 <br />
 <br />
 <kbd>
-    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana/img/180720221039.png">
+    <img src="https://github.com/fabiokerber/Vagrant/blob/main/ansible_elk_grafana_zbx/img/180720221039.png">
 </kbd>
 <br />
 <br />
