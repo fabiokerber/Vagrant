@@ -398,7 +398,6 @@ https://medium.com/analytics-vidhya/installing-elk-stack-in-docker-828df335e421<
 > http://LOG_IP:5601
 
 > http://LOG_IP:9200
-
 ```
 
 # ZABBIX
@@ -412,4 +411,36 @@ https://medium.com/analytics-vidhya/installing-elk-stack-in-docker-828df335e421<
 > http://ZABBIX_IP:8080
   Admin
   zabbix
+```
+
+# Backup
+
+
+**ELK - Mapping**<br>
+Esquema de comos os dados devem ser armazenados.<br>
+Que tipo de dado é, como indexar e como analisar.<br>
+
+
+**Commands**
+```
+_Cria índice
+
+curl -H "Content-Type: application/json" -XPUT 192.168.0.185:9200/movies -d '{ "mappings": { "properties": {"year": {"type": "date"} } } }'
+
+_Checa índice criado
+
+curl -H "Content-Type: application/json" -XGET 192.168.0.185:9200/movies/_mapping
+
+_Cria um documento com identificador único.
+_Se não atribuir o identificador único, o ELK o faz.
+
+curl -H "Content-Type: application/json" -XPOST 192.168.0.185:9200/movies/_doc/109487 -d '{ "genre": ["IMAX","Sci-Fi"], "title": "Interstelar", "year": 2014 }'
+
+_Checa registro no índice movies
+
+curl -H "Content-Type: application/json" -XGET 192.168.0.185:9200/movies/_search?pretty
+
+_Envia lotes de documentos
+
+curl -H "Content-Type: application/json" -XPUT 192.168.0.185:9200/_bulk -d '{ "create": { "_index": "movies", "_id": "1111" } } { "id": "1111", "title": "Star Trek Beyond", "year": 2016, "genre": ["Action", "Adventure", "Sci-Fi"] } { "create": { "_index": "movies", "_id": "2222" } } { "id": "2222", "title": "Star Wars: Episode VII - The Force Awakens", "year": 2015, "genre": ["Action", "Adventure", "Sci-Fi", "Fantasy", "IMAX"] }'
 ```
